@@ -1,16 +1,32 @@
+import { Notice } from "@/components/admin/Notice";
+import { SignIn } from "@/components/admin/SignIn";
 import { Editor } from "@/components/editor/Editor";
-import { sampleSpread } from "@/lib/diary/fixtures";
+import { hasAdminCookie } from "@/lib/auth";
+import { loadDiary, type LoadResult } from "@/lib/diary/repo";
+import { errorMessage } from "@/lib/http";
 
-export default function Home() {
-  return (
-    <main className="flex h-dvh flex-col">
-      <header className="flex -rotate-[0.3deg] items-baseline gap-4 px-6 pt-5 pb-1 md:px-10 md:pt-7">
-        <h1 className="font-serif text-[34px] leading-none italic">Diary</h1>
-        <span className="font-mono text-[11px] tracking-[.12em] text-ink-faint uppercase">
-          September 2026
-        </span>
-      </header>
-      <Editor initialPages={sampleSpread} className="min-h-0 flex-1" />
-    </main>
-  );
+export const dynamic = "force-dynamic";
+
+// The whole site is private: nothing renders without the admin cookie.
+export default async function Home() {
+  if (!(await hasAdminCookie())) return <SignIn />;
+
+  const result: LoadResult | { status: "error"; message: string } = await loadDiary().catch((error) => ({
+    status: "error" as const,
+    message: errorMessage(error, "unknown error"),
+  }));
+
+  if (result.status === "error") {
+    return <Notice title="Can’t reach the database" detail={result.message} adminLink />;
+  }
+  if (result.status === "setup-needed" || result.pages.length === 0) {
+    return (
+      <Notice
+        title="The diary isn’t set up yet"
+        detail="Open admin and press “Set up database” to create the tables and the first pages."
+        adminLink
+      />
+    );
+  }
+  return <Editor diary={result.diary} initialPages={result.pages} />;
 }

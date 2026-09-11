@@ -1,7 +1,8 @@
-import type { Page } from "./types";
+import type { Page } from "@/lib/diary/types";
 
-// Recreates the mockup's "Desktop spread" (pages 11–12), with body text at
-// the raised default size. Stand-in for real rows until the database exists.
+// Seed data for a new diary: the mockup's "Desktop spread", with body text at
+// the raised default size. Inserted by setupDatabase() as the first two pages
+// of a diary that has none.
 //
 // Photos: Wikimedia Commons, CC BY-SA 2.0 —
 //   "Grey Heron, standing still" © Peter Barr
@@ -15,12 +16,9 @@ const HEDGEROW =
 const PIER =
   "https://upload.wikimedia.org/wikipedia/commons/6/6a/Beach_and_Pier_at_low_tide%2C_Worthing%2C_West_Sussex_-_geograph.org.uk_-_4300244.jpg";
 
-const DIARY_ID = "d-sample";
+type SeedPage = Pick<Page, "background" | "elements">;
 
-export const leftPage: Page = {
-  id: "p-11",
-  diary_id: DIARY_ID,
-  index: 10,
+const leftPage: SeedPage = {
   background: "blush",
   elements: [
     {
@@ -122,10 +120,7 @@ export const leftPage: Page = {
   ],
 };
 
-export const rightPage: Page = {
-  id: "p-12",
-  diary_id: DIARY_ID,
-  index: 11,
+const rightPage: SeedPage = {
   background: "blush",
   elements: [
     {
@@ -214,4 +209,4 @@ export const rightPage: Page = {
   ],
 };
 
-export const sampleSpread = [leftPage, rightPage] as const;
+export const SEED_PAGES: SeedPage[] = [leftPage, rightPage];

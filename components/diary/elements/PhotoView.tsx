@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { PhotoElement } from "@/lib/diary/types";
+import { displaySrc } from "@/lib/diary/media";
 import { FONTS, PHOTO_FALLBACK_BG, frameInsets } from "@/lib/diary/presets";
 
 export function PhotoView({ element }: { element: PhotoElement }) {
@@ -47,7 +48,7 @@ export function PhotoView({ element }: { element: PhotoElement }) {
               // An image that errored before hydration never fires onError.
               if (img?.complete && img.naturalWidth === 0) setFailedSrc(src);
             }}
-            src={src}
+            src={displaySrc(src)}
             alt={caption ?? ""}
             draggable={false}
             onError={() => setFailedSrc(src)}

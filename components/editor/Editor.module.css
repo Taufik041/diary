@@ -1,6 +1,75 @@
 /* Canvas beside the side panel on desktop; above the sheet on mobile, where
    opening the sheet shrinks the canvas and the page scales to fit. */
+.shell {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px 6px;
+  rotate: -0.3deg;
+}
+
+.brand,
+.headerSide {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+
+.diaryTitle {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.meta,
+.status {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.status[data-state="retrying"],
+.status[data-state="signed-out"] {
+  color: var(--danger);
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 24px;
+  padding: 4px 4px 4px 14px;
+  border: 1px solid var(--danger-edge);
+  border-radius: 10px;
+  background: var(--danger-tint);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.notice button {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .editor {
+  flex: 1;
   display: flex;
   min-height: 0;
 }

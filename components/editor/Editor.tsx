@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { displaySrc } from "@/lib/diary/media";
 import {
   PAGE_H,
   PAGE_W,
+  type Diary,
   type Page as PageData,
   type PageElement,
   type PhotoFrame,
@@ -19,11 +22,14 @@ import {
   scaleAbout,
   withHeight,
 } from "@/lib/editor/geometry";
+import { preload, resizeImage, uploadPhoto } from "@/lib/editor/upload";
+import { errorMessage } from "@/lib/http";
 import { AddPanel } from "./AddPanel";
 import { Canvas, type Selection } from "./Canvas";
 import { ControlsPanel } from "./ControlsPanel";
 import { measureTextHeight } from "./measure";
 import { CaptionEditor, TextEditor } from "./TextEditor";
+import { useAutosave, type SaveState } from "./useAutosave";
 import styles from "./Editor.module.css";
 import panel from "./Panel.module.css";
 
@@ -38,16 +44,17 @@ const NUDGE_KEYS: Record<string, [number, number]> = {
   ArrowDown: [0, 1],
 };
 
-// In-memory editor over a spread: owns the pages, the selection and the
-// panels. Canvas handles gestures; the panels handle precise edits.
-export function Editor({
-  initialPages,
-  className,
-}: {
-  initialPages: readonly [PageData, PageData?];
-  className?: string;
-}) {
-  const [pages, setPages] = useState(() => initialPages.filter((p): p is PageData => !!p));
+const SAVE_LABEL: Record<SaveState, string> = {
+  saved: "Saved",
+  saving: "Saving…",
+  retrying: "Not saved · retrying",
+  "signed-out": "Signed out · reload to sign in",
+};
+
+// The diary editor: owns the pages, the selection and the panels. Canvas
+// handles gestures; the panels handle precise edits; changes autosave.
+export function Editor({ diary, initialPages }: { diary: Diary; initialPages: PageData[] }) {
+  const [pages, setPages] = useState(initialPages);
   const [selection, setSelection] = useState<Selection>(null);
   const [lastPageId, setLastPageId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -55,7 +62,12 @@ export function Editor({
   const [editing, setEditing] = useState<{ pageId: string; elementId: string; isNew: boolean } | null>(
     null,
   );
+  const [uploads, setUploads] = useState(0);
+  const [notice, setNotice] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+
+  const saveState = useAutosave(pages);
+  const visible = pages.slice(0, 2);
 
   // ── Page state ────────────────────────────────────────────────────────────
 
@@ -96,8 +108,11 @@ export function Editor({
   // ── Adding ────────────────────────────────────────────────────────────────
 
   // New elements go to the selected element's page, else the page last
-  // touched, else the first; centred on whatever part of it is on screen.
-  const targetPageId = () => selection?.pageId ?? lastPageId ?? pages[0].id;
+  // touched, else the first visible; centred on whatever part is on screen.
+  const targetPageId = () => {
+    const candidates = [selection?.pageId, lastPageId];
+    return candidates.find((id) => id && visible.some((p) => p.id === id)) ?? visible[0].id;
+  };
 
   const placement = (pageId: string, w: number, h: number) => {
     let c = { x: PAGE_W / 2, y: PAGE_H / 2 };
@@ -131,18 +146,61 @@ export function Editor({
     if (placed.type === "text") setEditing({ pageId, elementId: placed.id, isNew: true });
   };
 
-  // Pass A: the photo stays a local object URL. Real upload is Pass B.
+  // ── Photos ────────────────────────────────────────────────────────────────
+  // Resize in the browser, show the resized photo at once from an object URL,
+  // upload it (signed, direct to Cloudinary), then swap in the real URL.
+  // Autosave skips photos until they have it.
+
+  const objectUrls = useRef(new Set<string>());
+  useEffect(() => {
+    const urls = objectUrls.current;
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url);
+      urls.clear();
+    };
+  }, []);
+
+  // Applies to every photo using `from` — including a copy duplicated while
+  // the upload was still running. `to: null` removes them.
+  const replaceSrc = (from: string, to: string | null) =>
+    setPages((ps) =>
+      ps.map((p) =>
+        p.elements.some((e) => e.type === "photo" && e.src === from)
+          ? {
+              ...p,
+              elements: to
+                ? p.elements.map((e) => (e.type === "photo" && e.src === from ? { ...e, src: to } : e))
+                : p.elements.filter((e) => !(e.type === "photo" && e.src === from)),
+            }
+          : p,
+      ),
+    );
+
   const addPhoto = async (frame: PhotoFrame, file: File) => {
-    const src = URL.createObjectURL(file);
-    const img = new Image();
-    img.src = src;
+    let photo: Awaited<ReturnType<typeof resizeImage>>;
     try {
-      await img.decode();
-    } catch {
-      URL.revokeObjectURL(src);
+      photo = await resizeImage(file);
+    } catch (error) {
+      setNotice(`Couldn’t read that photo: ${errorMessage(error, "unknown error")}`);
       return;
     }
-    addElement(newPhoto(frame, src, img.naturalWidth / img.naturalHeight));
+    const preview = URL.createObjectURL(photo.blob);
+    objectUrls.current.add(preview);
+    addElement(newPhoto(frame, preview, photo.width / photo.height));
+    setUploads((n) => n + 1);
+    try {
+      const url = await uploadPhoto(photo.blob);
+      await preload(displaySrc(url));
+      replaceSrc(preview, url);
+    } catch (error) {
+      replaceSrc(preview, null);
+      setNotice(`Photo not uploaded: ${errorMessage(error, "upload failed")}`);
+    } finally {
+      setUploads((n) => n - 1);
+      // Safe once swapped: an <img> that has decoded keeps its pixels.
+      URL.revokeObjectURL(preview);
+      objectUrls.current.delete(preview);
+    }
   };
 
   // ── Selected-element actions ──────────────────────────────────────────────
@@ -252,62 +310,89 @@ export function Editor({
 
   const selectedPage = selection ? pages.find((p) => p.id === selection.pageId) : undefined;
   const layers = selected && selectedPage ? layerPosition(selectedPage.elements, selected.id) : null;
+  const status = uploads > 0 && saveState === "saved" ? "Uploading photo…" : SAVE_LABEL[saveState];
 
   return (
-    <div className={className ? `${styles.editor} ${className}` : styles.editor}>
+    <main className={styles.shell}>
       {/* Covered and inert while the text editor is open. */}
       <div className={styles.workspace} inert={!!editing}>
-      <Canvas
-        pages={pages}
-        selection={selection}
-        stageRef={stageRef}
-        className={styles.canvas}
-        onSelect={(s) => {
-          setSelection(s);
-          if (s) setAddOpen(false);
-        }}
-        onChange={change}
-        onOpen={openEditor}
-        onPageTouch={setLastPageId}
-      />
+        <header className={styles.header}>
+          <div className={styles.brand}>
+            <h1 className={styles.diaryTitle}>{diary.title}</h1>
+            <span className={styles.meta}>{pages.length} pages</span>
+          </div>
+          <div className={styles.headerSide}>
+            <span className={styles.status} data-state={saveState} role="status">
+              {status}
+            </span>
+            <Link href="/admin" className={styles.meta}>
+              Admin
+            </Link>
+          </div>
+        </header>
 
-      {selected && selection && layers ? (
-        <ControlsPanel
-          element={selected}
-          canForward={layers.canForward}
-          canBack={layers.canBack}
-          onChange={(patch) => change(selection.pageId, selected.id, patch)}
-          onScale={scale}
-          onNudge={nudge}
-          onLayer={layer}
-          onDuplicate={duplicate}
-          onDelete={remove}
-          onClose={() => setSelection(null)}
-          onEdit={() => openEditor(selection.pageId, selected.id)}
-        />
-      ) : (
-        <>
-          {/* Desktop: always shown in the side panel. Mobile: behind the + button. */}
-          <aside
-            className={addOpen ? panel.panel : `${panel.panel} ${panel.desktopOnly}`}
-            aria-label="Add to the page"
-          >
-            <AddPanel onAdd={addElement} onAddPhoto={addPhoto} onClose={() => setAddOpen(false)} />
-          </aside>
-          {!addOpen && (
-            <div className={panel.bar}>
-              <button
-                type="button"
-                className={panel.fab}
+        {notice && (
+          <div className={styles.notice} role="alert">
+            <span>{notice}</span>
+            <button type="button" aria-label="Dismiss" onClick={() => setNotice(null)}>
+              ×
+            </button>
+          </div>
+        )}
+
+        <div className={styles.editor}>
+          <Canvas
+            pages={visible}
+            selection={selection}
+            stageRef={stageRef}
+            className={styles.canvas}
+            onSelect={(s) => {
+              setSelection(s);
+              if (s) setAddOpen(false);
+            }}
+            onChange={change}
+            onOpen={openEditor}
+            onPageTouch={setLastPageId}
+          />
+
+          {selected && selection && layers ? (
+            <ControlsPanel
+              element={selected}
+              canForward={layers.canForward}
+              canBack={layers.canBack}
+              onChange={(patch) => change(selection.pageId, selected.id, patch)}
+              onScale={scale}
+              onNudge={nudge}
+              onLayer={layer}
+              onDuplicate={duplicate}
+              onDelete={remove}
+              onClose={() => setSelection(null)}
+              onEdit={() => openEditor(selection.pageId, selected.id)}
+            />
+          ) : (
+            <>
+              {/* Desktop: always shown in the side panel. Mobile: behind the + button. */}
+              <aside
+                className={addOpen ? panel.panel : `${panel.panel} ${panel.desktopOnly}`}
                 aria-label="Add to the page"
-                onClick={() => setAddOpen(true)}
               >
-                +
-              </button>
-            </div>
+                <AddPanel onAdd={addElement} onAddPhoto={addPhoto} onClose={() => setAddOpen(false)} />
+              </aside>
+              {!addOpen && (
+                <div className={panel.bar}>
+                  <button
+                    type="button"
+                    className={panel.fab}
+                    aria-label="Add to the page"
+                    onClick={() => setAddOpen(true)}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
       </div>
 
       {editingElement?.type === "text" && (
@@ -316,6 +401,6 @@ export function Editor({
       {editingElement?.type === "photo" && (
         <CaptionEditor element={editingElement} onDone={closeEditor} onCancel={() => closeEditor()} />
       )}
-    </div>
+    </main>
   );
 }

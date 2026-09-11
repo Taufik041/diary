@@ -29,6 +29,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Diary",
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
