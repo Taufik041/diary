@@ -35,6 +35,8 @@
   --danger: #b07272;
   --danger-tint: #f2e2e2;
   --danger-edge: #e2c9c9;
+  --page-edge: #e7d3d3; /* text editor's paper border */
+  --counter: #bfa9a9; /* character count */
 
   --shadow-sm: 0 1px 4px rgba(107, 83, 74, 0.18);
   --shadow-el: 0 2px 5px rgba(107, 83, 74, 0.16), 0 10px 22px rgba(107, 83, 74, 0.1);

@@ -34,9 +34,11 @@ export function newText(style: TextStyle): TextElement {
     color: "ink" as const,
     align: "left" as const,
   };
+  // Starts empty: the editor opens the full-screen text editor straight away,
+  // and discards the element if it's still empty when that closes.
   return style === "card"
-    ? { ...common, w: 380, h: 200, fontSize: 32, title: "Worth keeping", content: "the first thing\nthe second thing" }
-    : { ...common, w: 460, h: 80, fontSize: DEFAULT_BODY_FONT_SIZE, content: "Something worth writing down." };
+    ? { ...common, w: 380, h: 200, fontSize: 32, title: "", content: "" }
+    : { ...common, w: 460, h: 80, fontSize: DEFAULT_BODY_FONT_SIZE, content: "" };
 }
 
 // Sized from the photo's own aspect ratio so the frame doesn't crop it.

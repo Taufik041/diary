@@ -5,6 +5,11 @@
   min-height: 0;
 }
 
+/* Wrapper only so the canvas and panels can be made inert together. */
+.workspace {
+  display: contents;
+}
+
 .canvas {
   flex: 1;
   min-width: 0;

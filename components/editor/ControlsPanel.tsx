@@ -48,6 +48,8 @@ interface ControlsPanelProps {
   onDuplicate: () => void;
   onDelete: () => void;
   onClose: () => void;
+  // Opens the full-screen editor (text, or a polaroid's caption).
+  onEdit: () => void;
 }
 
 // Precise, per-element controls: bottom sheet on mobile, side panel on
@@ -63,6 +65,7 @@ export function ControlsPanel({
   onDuplicate,
   onDelete,
   onClose,
+  onEdit,
 }: ControlsPanelProps) {
   const boxSize = (
     <Stepper
@@ -86,6 +89,7 @@ export function ControlsPanel({
 
       {el.type === "text" && (
         <>
+          <Chip onClick={onEdit}>Edit text…</Chip>
           <Typefaces value={el.fontFamily} onChange={(fontFamily) => onChange({ fontFamily })} />
           <Swatches value={el.color} onChange={(color) => onChange({ color })} />
           <div className={p.row}>
@@ -101,6 +105,9 @@ export function ControlsPanel({
       {el.type === "photo" && (
         <>
           <Frames value={el.frame} onChange={(frame) => onChange({ frame })} />
+          {el.frame === "polaroid" && (
+            <Chip onClick={onEdit}>{el.caption ? "Edit caption…" : "Add a caption…"}</Chip>
+          )}
           {boxSize}
         </>
       )}

@@ -23,6 +23,7 @@ import { AddPanel } from "./AddPanel";
 import { Canvas, type Selection } from "./Canvas";
 import { ControlsPanel } from "./ControlsPanel";
 import { measureTextHeight } from "./measure";
+import { CaptionEditor, TextEditor } from "./TextEditor";
 import styles from "./Editor.module.css";
 import panel from "./Panel.module.css";
 
@@ -50,6 +51,10 @@ export function Editor({
   const [selection, setSelection] = useState<Selection>(null);
   const [lastPageId, setLastPageId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  // Full-screen text editor. isNew: discard the element on cancel.
+  const [editing, setEditing] = useState<{ pageId: string; elementId: string; isNew: boolean } | null>(
+    null,
+  );
   const stageRef = useRef<HTMLDivElement>(null);
 
   // ── Page state ────────────────────────────────────────────────────────────
@@ -120,9 +125,10 @@ export function Editor({
     const page = pages.find((p) => p.id === pageId)!;
     const placed = { ...el, ...placement(pageId, el.w, el.h), z: topZ(page.elements) } as PageElement;
     flushSync(() => mapElements(pageId, (els) => [...els, placed]));
-    if (placed.type === "text") refit(pageId, placed);
     setSelection({ pageId, elementId: placed.id });
     setAddOpen(false);
+    // New text goes straight to the full-screen editor.
+    if (placed.type === "text") setEditing({ pageId, elementId: placed.id, isNew: true });
   };
 
   // Pass A: the photo stays a local object URL. Real upload is Pass B.
@@ -165,17 +171,57 @@ export function Editor({
     setSelection({ pageId: selection.pageId, elementId: copy.id });
   };
 
-  const remove = () => {
-    if (!selection) return;
-    mapElements(selection.pageId, (els) => els.filter((e) => e.id !== selection.elementId));
-    setSelection(null);
+  const removeElement = (pageId: string, id: string) => {
+    mapElements(pageId, (els) => els.filter((e) => e.id !== id));
+    if (selection?.elementId === id) setSelection(null);
   };
+
+  const remove = () => {
+    if (selection) removeElement(selection.pageId, selection.elementId);
+  };
+
+  // ── Full-screen text editor ───────────────────────────────────────────────
+
+  // Tap on an already-selected text element (or polaroid, for its caption).
+  const openEditor = (pageId: string, elementId: string) => {
+    const el = find(pageId, elementId);
+    if (el?.type === "text" || (el?.type === "photo" && el.frame === "polaroid")) {
+      setEditing({ pageId, elementId, isNew: false });
+    }
+  };
+
+  // No patch = cancel. Text left empty is removed rather than kept invisible.
+  const closeEditor = (patch?: Partial<PageElement>) => {
+    if (!editing) return;
+    const { pageId, elementId, isNew } = editing;
+    const el = find(pageId, elementId);
+    setEditing(null);
+    if (!el) return;
+    if (!patch) {
+      if (isNew) removeElement(pageId, elementId);
+      return;
+    }
+    if (el.type === "text") {
+      const next = { ...el, ...patch } as TextElement;
+      if (!next.content.trim() && !(next.style === "card" && next.title?.trim())) {
+        removeElement(pageId, elementId);
+        return;
+      }
+    }
+    change(pageId, elementId, patch);
+  };
+
+  const editingElement = editing ? find(editing.pageId, editing.elementId) : undefined;
 
   // ── Keyboard (desktop) ────────────────────────────────────────────────────
 
   const onKey = useRef<(e: KeyboardEvent) => void>(() => {});
   useEffect(() => {
     onKey.current = (e) => {
+      if (editing) {
+        if (e.key === "Escape") closeEditor();
+        return;
+      }
       if ((e.target as HTMLElement | null)?.closest?.("input, textarea, select")) return;
       if (e.key === "Escape") {
         setSelection(null);
@@ -209,6 +255,8 @@ export function Editor({
 
   return (
     <div className={className ? `${styles.editor} ${className}` : styles.editor}>
+      {/* Covered and inert while the text editor is open. */}
+      <div className={styles.workspace} inert={!!editing}>
       <Canvas
         pages={pages}
         selection={selection}
@@ -219,7 +267,7 @@ export function Editor({
           if (s) setAddOpen(false);
         }}
         onChange={change}
-        onOpen={() => {}}
+        onOpen={openEditor}
         onPageTouch={setLastPageId}
       />
 
@@ -235,6 +283,7 @@ export function Editor({
           onDuplicate={duplicate}
           onDelete={remove}
           onClose={() => setSelection(null)}
+          onEdit={() => openEditor(selection.pageId, selected.id)}
         />
       ) : (
         <>
@@ -258,6 +307,14 @@ export function Editor({
             </div>
           )}
         </>
+      )}
+      </div>
+
+      {editingElement?.type === "text" && (
+        <TextEditor element={editingElement} onDone={closeEditor} onCancel={() => closeEditor()} />
+      )}
+      {editingElement?.type === "photo" && (
+        <CaptionEditor element={editingElement} onDone={closeEditor} onCancel={() => closeEditor()} />
       )}
     </div>
   );
