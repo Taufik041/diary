@@ -22,6 +22,16 @@ const DEG = Math.PI / 180;
 
 export const normalizeDeg = (d: number) => ((((d + 180) % 360) + 360) % 360) - 180;
 
+// Stored geometry is rounded to keep the jsonb tidy: 0.1 unit, 0.01°.
+export const r1 = (v: number) => Math.round(v * 10) / 10;
+export const roundBox = (b: Box): Box => ({
+  x: r1(b.x),
+  y: r1(b.y),
+  w: r1(b.w),
+  h: r1(b.h),
+  rotation: Math.round(b.rotation * 100) / 100,
+});
+
 // ── Client pixels ↔ page units ──────────────────────────────────────────────
 
 // client = origin + x·ex + y·ey, where (x, y) are page units.
@@ -149,6 +159,10 @@ export function resizeUniform<T extends Box>(b0: T, h: Handle, q: Vec): { box: T
   const k = Math.max(MIN_SIZE / Math.min(b0.w, b0.h), dot(sub(q, f), diag) / dot(diag, diag));
   return { box: fromCenter(b0, add(f, mul(diag, k / 2)), b0.w * k, b0.h * k), k };
 }
+
+// Uniform scale about the centre (the panel's size stepper).
+export const scaleAbout = <T extends Box>(b: T, k: number): T =>
+  fromCenter(b, center(b), Math.max(MIN_SIZE, b.w * k), Math.max(MIN_SIZE, b.h * k));
 
 // New height with the top edge held in place (in the element's own frame),
 // so refitting text on a tilted box grows it downward along its tilt.

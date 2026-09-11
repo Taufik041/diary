@@ -10,7 +10,7 @@ export default function Home() {
           September 2026
         </span>
       </header>
-      <Editor initialPages={sampleSpread} className="flex-1" />
+      <Editor initialPages={sampleSpread} className="min-h-0 flex-1" />
     </main>
   );
 }

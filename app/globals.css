@@ -28,6 +28,14 @@
   --clip-metal: #b5a798;
   --clip-metal-light: #beb1a2;
 
+  /* Editing chrome (mockup screens 3–5) */
+  --sheet: #f6efe4; /* bottom sheet / side panel ground */
+  --grabber: #d8c9b7;
+  --accent-edge: #c9d3c4; /* border of a selected chip */
+  --danger: #b07272;
+  --danger-tint: #f2e2e2;
+  --danger-edge: #e2c9c9;
+
   --shadow-sm: 0 1px 4px rgba(107, 83, 74, 0.18);
   --shadow-el: 0 2px 5px rgba(107, 83, 74, 0.16), 0 10px 22px rgba(107, 83, 74, 0.1);
   --shadow-md: 0 2px 6px rgba(107, 83, 74, 0.18), 0 12px 26px rgba(107, 83, 74, 0.1);

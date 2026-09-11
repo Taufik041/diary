@@ -1,3 +1,22 @@
+/* Canvas beside the side panel on desktop; above the sheet on mobile, where
+   opening the sheet shrinks the canvas and the page scales to fit. */
+.editor {
+  display: flex;
+  min-height: 0;
+}
+
+.canvas {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+@media (max-width: 899px), (orientation: portrait) {
+  .editor {
+    flex-direction: column;
+  }
+}
+
 .stage {
   overflow: hidden;
   touch-action: none;
