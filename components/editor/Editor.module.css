@@ -79,10 +79,88 @@
   display: contents;
 }
 
+.canvasArea {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
 .canvas {
   flex: 1;
   min-width: 0;
   min-height: 0;
+}
+
+/* Page change: a simple fade (a real page-flip is out of scope). */
+.pageIn {
+  animation: pageIn 0.22s ease-out;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* Desktop ‹ › beside the book (mockup screen 1). */
+.turn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  padding-bottom: 5px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 1px solid var(--cover-edge);
+  box-shadow: 0 3px 10px rgba(107, 83, 74, 0.14);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.turn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.turnPrev {
+  left: 14px;
+  rotate: -2deg;
+}
+
+.turnNext {
+  right: 14px;
+  rotate: 2deg;
+}
+
+.pagesButton {
+  min-height: 40px;
+  padding: 0 18px;
+  align-self: center;
+  border-radius: 999px;
+  background: var(--sheet);
+  border: 1px solid var(--cover-edge);
+  box-shadow: 0 2px 5px rgba(107, 83, 74, 0.1);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+@media (max-width: 899px), (orientation: portrait) {
+  .turn,
+  .pagesButton {
+    display: none;
+  }
 }
 
 @media (max-width: 899px), (orientation: portrait) {

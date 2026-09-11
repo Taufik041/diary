@@ -34,6 +34,12 @@
   display: none;
 }
 
+.panel,
+.bar {
+  font-family: var(--font-cormorant), Georgia, serif;
+  color: var(--ink);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -372,9 +378,55 @@
     display: none;
   }
 
+  /* Mockup screen 2's bottom bar: Pages · ‹ + › · page number */
   .bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .barCenter {
     display: flex;
-    justify-content: center;
-    padding: 10px 22px calc(18px + env(safe-area-inset-bottom));
+    align-items: center;
+    gap: 6px;
+  }
+
+  .barPill {
+    justify-self: start;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--sheet);
+    border: 1px solid var(--cover-edge);
+    box-shadow: 0 2px 5px rgba(107, 83, 74, 0.1);
+    font-style: italic;
+    font-size: 18px;
+    rotate: -1.4deg;
+    cursor: pointer;
+  }
+
+  .barTurn {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    padding-bottom: 3px;
+    font-size: 26px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+
+  .barTurn:disabled {
+    opacity: 0.3;
+  }
+
+  .barNumber {
+    justify-self: end;
+    font-family: var(--font-plex-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
   }
 }

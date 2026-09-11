@@ -64,6 +64,10 @@
   flex: 0 0 50%;
 }
 
+.leaf[data-blank] {
+  background: var(--page-alt);
+}
+
 .gutter {
   position: absolute;
   top: 0;

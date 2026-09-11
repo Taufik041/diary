@@ -28,8 +28,10 @@ import { AddPanel } from "./AddPanel";
 import { Canvas, type Selection } from "./Canvas";
 import { ControlsPanel } from "./ControlsPanel";
 import { measureTextHeight } from "./measure";
+import { PagesGrid } from "./PagesGrid";
 import { CaptionEditor, TextEditor } from "./TextEditor";
-import { useAutosave, type SaveState } from "./useAutosave";
+import { persistable, useAutosave, type SaveState } from "./useAutosave";
+import { useSinglePage } from "./useSinglePage";
 import styles from "./Editor.module.css";
 import panel from "./Panel.module.css";
 
@@ -64,10 +66,37 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
   );
   const [uploads, setUploads] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
+  const [current, setCurrent] = useState(0); // index of the page in focus
+  const [gridOpen, setGridOpen] = useState(false);
+  const [pageBusy, setPageBusy] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
   const saveState = useAutosave(pages);
-  const visible = pages.slice(0, 2);
+  const single = useSinglePage();
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+  // Desktop shows the spread holding the current page (0–1, 2–3, …); mobile
+  // shows just the current page. ‹ › move by a spread or by a page.
+
+  const count = pages.length;
+  const at = Math.min(current, count - 1);
+  const spreadStart = at - (at % 2);
+  const visible = pages.slice(spreadStart, spreadStart + 2);
+  const focus = (at % 2) as 0 | 1;
+  const canPrev = single ? at > 0 : spreadStart > 0;
+  const canNext = single ? at < count - 1 : spreadStart + 2 < count;
+  const position =
+    single || visible.length === 1 ? `${at + 1} / ${count}` : `${spreadStart + 1}–${spreadStart + 2} / ${count}`;
+
+  const goTo = (index: number) => {
+    const target = clamp(index, 0, count - 1);
+    if (target === at) return;
+    setSelection(null);
+    setAddOpen(false);
+    setCurrent(target);
+  };
+  const prev = () => goTo(single ? at - 1 : spreadStart - 2);
+  const next = () => goTo(single ? at + 1 : spreadStart + 2);
 
   // ── Page state ────────────────────────────────────────────────────────────
 
@@ -238,6 +267,60 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
     if (selection) removeElement(selection.pageId, selection.elementId);
   };
 
+  // ── Pages ─────────────────────────────────────────────────────────────────
+  // Server first (it assigns the id and shifts indexes), then mirror locally.
+
+  const renumber = (ps: PageData[]) => ps.map((p, i) => (p.index === i ? p : { ...p, index: i }));
+
+  // `source`: duplicate it, sending its current elements so edits that
+  // haven't autosaved yet are copied too. `open`: go to the new page.
+  const addPage = async (position: number, { source, open }: { source?: PageData; open: boolean }) => {
+    setPageBusy(true);
+    try {
+      const res = await fetch("/api/admin/pages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          diaryId: diary.id,
+          at: position,
+          background: source?.background ?? "blush",
+          elements: source ? persistable(source.elements) : [],
+        }),
+      });
+      const body = (await res.json().catch(() => ({}))) as { page?: PageData; error?: string };
+      if (!res.ok || !body.page) throw new Error(body.error ?? `error ${res.status}`);
+      const page = body.page;
+      setPages((ps) => renumber([...ps.slice(0, page.index), page, ...ps.slice(page.index)]));
+      if (open) {
+        setSelection(null);
+        setCurrent(page.index);
+        setGridOpen(false);
+      } else if (page.index <= at) {
+        setCurrent((c) => c + 1); // keep the same page in view
+      }
+    } catch (error) {
+      setNotice(`Couldn’t add the page: ${errorMessage(error, "unknown error")}`);
+    } finally {
+      setPageBusy(false);
+    }
+  };
+
+  const deletePage = async (page: PageData) => {
+    setPageBusy(true);
+    try {
+      const res = await fetch(`/api/admin/pages/${page.id}`, { method: "DELETE" });
+      const body = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(body.error ?? `error ${res.status}`);
+      setPages((ps) => renumber(ps.filter((p) => p.id !== page.id)));
+      setCurrent((c) => Math.max(0, c > page.index ? c - 1 : Math.min(c, count - 2)));
+      if (selection?.pageId === page.id) setSelection(null);
+    } catch (error) {
+      setNotice(`Couldn’t delete the page: ${errorMessage(error, "unknown error")}`);
+    } finally {
+      setPageBusy(false);
+    }
+  };
+
   // ── Full-screen text editor ───────────────────────────────────────────────
 
   // Tap on an already-selected text element (or polaroid, for its caption).
@@ -280,10 +363,25 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
         if (e.key === "Escape") closeEditor();
         return;
       }
+      if (gridOpen) {
+        if (e.key === "Escape") setGridOpen(false);
+        return;
+      }
       if ((e.target as HTMLElement | null)?.closest?.("input, textarea, select")) return;
       if (e.key === "Escape") {
         setSelection(null);
         setAddOpen(false);
+        return;
+      }
+      // Arrows nudge a selected element; with nothing selected they turn pages.
+      if (e.key === "PageUp" || (!selection && e.key === "ArrowLeft")) {
+        e.preventDefault();
+        prev();
+        return;
+      }
+      if (e.key === "PageDown" || (!selection && e.key === "ArrowRight")) {
+        e.preventDefault();
+        next();
         return;
       }
       if (!selection) return;
@@ -315,13 +413,16 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
   return (
     <main className={styles.shell}>
       {/* Covered and inert while the text editor is open. */}
-      <div className={styles.workspace} inert={!!editing}>
+      <div className={styles.workspace} inert={!!editing || gridOpen}>
         <header className={styles.header}>
           <div className={styles.brand}>
             <h1 className={styles.diaryTitle}>{diary.title}</h1>
-            <span className={styles.meta}>{pages.length} pages</span>
+            <span className={styles.meta}>{position}</span>
           </div>
           <div className={styles.headerSide}>
+            <button type="button" className={styles.pagesButton} onClick={() => setGridOpen(true)}>
+              Pages
+            </button>
             <span className={styles.status} data-state={saveState} role="status">
               {status}
             </span>
@@ -341,19 +442,43 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
         )}
 
         <div className={styles.editor}>
-          <Canvas
-            pages={visible}
-            selection={selection}
-            stageRef={stageRef}
-            className={styles.canvas}
-            onSelect={(s) => {
-              setSelection(s);
-              if (s) setAddOpen(false);
-            }}
-            onChange={change}
-            onOpen={openEditor}
-            onPageTouch={setLastPageId}
-          />
+          <div className={styles.canvasArea}>
+            {/* Keyed by page: a page change remounts, which plays the fade
+                and resets pan/zoom. */}
+            <Canvas
+              key={at}
+              pages={visible}
+              focus={focus}
+              selection={selection}
+              stageRef={stageRef}
+              className={`${styles.canvas} ${styles.pageIn}`}
+              onSelect={(s) => {
+                setSelection(s);
+                if (s) setAddOpen(false);
+              }}
+              onChange={change}
+              onOpen={openEditor}
+              onPageTouch={setLastPageId}
+            />
+            <button
+              type="button"
+              className={`${styles.turn} ${styles.turnPrev}`}
+              disabled={!canPrev}
+              aria-label="Previous pages"
+              onClick={prev}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className={`${styles.turn} ${styles.turnNext}`}
+              disabled={!canNext}
+              aria-label="Next pages"
+              onClick={next}
+            >
+              ›
+            </button>
+          </div>
 
           {selected && selection && layers ? (
             <ControlsPanel
@@ -380,20 +505,60 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
               </aside>
               {!addOpen && (
                 <div className={panel.bar}>
-                  <button
-                    type="button"
-                    className={panel.fab}
-                    aria-label="Add to the page"
-                    onClick={() => setAddOpen(true)}
-                  >
-                    +
+                  <button type="button" className={panel.barPill} onClick={() => setGridOpen(true)}>
+                    Pages
                   </button>
+                  <div className={panel.barCenter}>
+                    <button
+                      type="button"
+                      className={panel.barTurn}
+                      disabled={!canPrev}
+                      aria-label="Previous page"
+                      onClick={prev}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      className={panel.fab}
+                      aria-label="Add to the page"
+                      onClick={() => setAddOpen(true)}
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      className={panel.barTurn}
+                      disabled={!canNext}
+                      aria-label="Next page"
+                      onClick={next}
+                    >
+                      ›
+                    </button>
+                  </div>
+                  <span className={panel.barNumber}>{position}</span>
                 </div>
               )}
             </>
           )}
         </div>
       </div>
+
+      {gridOpen && (
+        <PagesGrid
+          pages={pages}
+          current={at}
+          busy={pageBusy}
+          onOpen={(i) => {
+            goTo(i);
+            setGridOpen(false);
+          }}
+          onAdd={() => addPage(count, { open: true })}
+          onDuplicate={(page) => addPage(page.index + 1, { source: page, open: false })}
+          onDelete={deletePage}
+          onClose={() => setGridOpen(false)}
+        />
+      )}
 
       {editingElement?.type === "text" && (
         <TextEditor element={editingElement} onDone={closeEditor} onCancel={() => closeEditor()} />

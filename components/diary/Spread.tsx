@@ -41,10 +41,13 @@ export function Spread({
             <div className={styles.leaf} data-focus={focus === 0 || undefined}>
               <Page page={left} overlay={renderOverlay?.(left)} />
             </div>
-            {right && (
+            {right ? (
               <div className={styles.leaf} data-focus={focus === 1 || undefined}>
                 <Page page={right} overlay={renderOverlay?.(right)} />
               </div>
+            ) : (
+              // Odd page count: the last spread faces a blank leaf, not bare cover.
+              <div className={styles.leaf} data-blank aria-hidden />
             )}
             <div className={styles.gutter} aria-hidden />
           </div>

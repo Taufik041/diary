@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { savePage } from "@/lib/diary/repo";
+import { deletePage, savePage } from "@/lib/diary/repo";
 import { isBackground, parseElements } from "@/lib/diary/validate";
 import { errorMessage, isUuid, readJson } from "@/lib/http";
 
@@ -30,5 +30,25 @@ export async function PUT(request: Request, { params }: Params) {
     return Response.json({ ok: true });
   } catch (error) {
     return Response.json({ error: errorMessage(error, "save failed") }, { status: 500 });
+  }
+}
+
+/** Delete a page; later pages move up. A diary always keeps one page. */
+export async function DELETE(_request: Request, { params }: Params) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
+  const { id } = await params;
+  if (!isUuid(id)) return Response.json({ error: "not found" }, { status: 404 });
+
+  try {
+    const result = await deletePage(id);
+    if (result === "not-found") return Response.json({ error: "not found" }, { status: 404 });
+    if (result === "last-page") {
+      return Response.json({ error: "a diary needs at least one page" }, { status: 409 });
+    }
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json({ error: errorMessage(error, "delete failed") }, { status: 500 });
   }
 }

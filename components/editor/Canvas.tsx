@@ -89,7 +89,10 @@ type Gesture =
   | { kind: "pinch-page"; a: number; b: number; mid0: Vec; d0: number; cam0: Camera };
 
 interface CanvasProps {
+  // The spread on screen: one or two pages.
   pages: PageData[];
+  // Which of them shows in the single-page (mobile) layout.
+  focus: 0 | 1;
   selection: Selection;
   stageRef: RefObject<HTMLDivElement | null>;
   className?: string;
@@ -105,6 +108,7 @@ interface CanvasProps {
 // page units; see readPageMatrix() for the screen → page mapping.
 export function Canvas({
   pages,
+  focus,
   selection,
   stageRef,
   className,
@@ -389,6 +393,7 @@ export function Canvas({
   return (
     <Spread
       pages={[pages[0], pages[1]]}
+      focus={focus}
       className={className ? `${styles.stage} ${className}` : styles.stage}
       stageRef={stageRef}
       stageProps={{

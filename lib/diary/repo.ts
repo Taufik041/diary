@@ -54,6 +54,62 @@ export async function loadDiary(): Promise<LoadResult> {
   return { status: "ok", diary: toDiary(diary), pages: rows.map(toPage) };
 }
 
+/**
+ * Insert a page at position `at` (clamped to the end), shifting later pages
+ * up by one. One statement, so it's atomic; the deferrable unique constraint
+ * is checked once the shift and the insert have both happened.
+ */
+export async function createPage(
+  diaryId: string,
+  at: number,
+  page: { background: PageBackground; elements: PageElement[] },
+): Promise<Page | null> {
+  const row = await queryOne<PageRow>(
+    `WITH pos AS (
+       SELECT LEAST($2::int, count(*)::int) AS at FROM ${T.pages} WHERE diary_id = $1
+     ),
+     shifted AS (
+       UPDATE ${T.pages} SET "index" = "index" + 1
+        WHERE diary_id = $1 AND "index" >= (SELECT at FROM pos)
+       RETURNING id
+     )
+     INSERT INTO ${T.pages} (diary_id, "index", background, elements)
+     SELECT $1, at, $3, $4::jsonb FROM pos
+     RETURNING ${PAGE_COLUMNS}`,
+    [diaryId, at, page.background, JSON.stringify(page.elements)],
+  );
+  return row ? toPage(row) : null;
+}
+
+/**
+ * Delete a page and close the gap in the indexes. Refuses to delete a
+ * diary's last page. One statement, so it's atomic.
+ */
+export async function deletePage(id: string): Promise<"deleted" | "not-found" | "last-page"> {
+  const [result] = await query<{ found: number; deleted: number }>(
+    `WITH target AS (
+       SELECT id, diary_id, "index" FROM ${T.pages} WHERE id = $1
+     ),
+     gone AS (
+       DELETE FROM ${T.pages} p USING target t
+        WHERE p.id = t.id
+          AND (SELECT count(*) FROM ${T.pages} q WHERE q.diary_id = t.diary_id) > 1
+       RETURNING t.diary_id, t."index"
+     ),
+     shifted AS (
+       UPDATE ${T.pages} p SET "index" = p."index" - 1
+         FROM gone g
+        WHERE p.diary_id = g.diary_id AND p."index" > g."index"
+       RETURNING p.id
+     )
+     SELECT (SELECT count(*) FROM target)::int AS found,
+            (SELECT count(*) FROM gone)::int AS deleted`,
+    [id],
+  );
+  if (!result?.found) return "not-found";
+  return result.deleted ? "deleted" : "last-page";
+}
+
 /** Autosave. Returns false if the page no longer exists. */
 export async function savePage(
   id: string,

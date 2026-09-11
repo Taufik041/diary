@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { PhotoElement } from "@/lib/diary/types";
 import { displaySrc } from "@/lib/diary/media";
 import { FONTS, PHOTO_FALLBACK_BG, frameInsets } from "@/lib/diary/presets";
 
+// How big a derivative to ask Cloudinary for, and whether to load lazily.
+// The pages grid provides small, lazy thumbnails.
+export const PhotoDisplayContext = createContext({ width: 1600, lazy: false });
+
 export function PhotoView({ element }: { element: PhotoElement }) {
   const { w, h, frame, src, caption } = element;
+  const display = useContext(PhotoDisplayContext);
   const inset = frameInsets(frame, w, h);
   const bordered = frame !== "rounded";
 
@@ -48,7 +53,8 @@ export function PhotoView({ element }: { element: PhotoElement }) {
               // An image that errored before hydration never fires onError.
               if (img?.complete && img.naturalWidth === 0) setFailedSrc(src);
             }}
-            src={displaySrc(src)}
+            src={displaySrc(src, display.width)}
+            loading={display.lazy ? "lazy" : undefined}
             alt={caption ?? ""}
             draggable={false}
             onError={() => setFailedSrc(src)}
