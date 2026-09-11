@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --ground: #efe6d9; /* app background around the book */
+  --page: #f7e7e7; /* page blush */
+  --page-alt: #fbf6ee; /* cream page variant */
+  --card: #f3eee3; /* note-card ground (per mockup) */
+  --card-edge: #dcd0bf;
+  --cover: #a99c90; /* book cover greige */
+  --cover-light: #b0a398; /* cover gradient ends */
+  --cover-dark: #9b8e82;
+  --cover-edge: #dfd2c2;
+
+  --ink: #6b534a; /* primary text — never pure black */
+  --ink-soft: #8c766b;
+  --ink-faint: #a2907f;
+  --ink-sage: #7f9679; /* sage text swatch */
+  --folio: #b29e90; /* page numbers */
+
+  --accent: #94a98e; /* sage — used sparingly */
+  --accent-soft: #a9bca2;
+  --accent-tint: #e9efe6;
+  --rose: #d9c4c4;
+  --rose-deep: #b98a8a;
+
+  --photo-white: #fdfcf9; /* polaroid border */
+  --photo-white-thin: #fcfaf6; /* thin border */
+  --clip-metal: #b5a798;
+  --clip-metal-light: #beb1a2;
+
+  --shadow-sm: 0 1px 4px rgba(107, 83, 74, 0.18);
+  --shadow-el: 0 2px 5px rgba(107, 83, 74, 0.16), 0 10px 22px rgba(107, 83, 74, 0.1);
+  --shadow-md: 0 2px 6px rgba(107, 83, 74, 0.18), 0 12px 26px rgba(107, 83, 74, 0.1);
+  --shadow-lg: 0 4px 12px rgba(107, 83, 74, 0.16), 0 24px 50px rgba(107, 83, 74, 0.14);
+
+  --fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-page: var(--page);
+  --color-page-alt: var(--page-alt);
+  --color-card: var(--card);
+  --color-card-edge: var(--card-edge);
+  --color-cover: var(--cover);
+  --color-cover-edge: var(--cover-edge);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-tint: var(--accent-tint);
+  --color-rose: var(--rose);
+  --color-rose-deep: var(--rose-deep);
+
+  --font-hand: var(--font-caveat), cursive;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+html {
+  background: var(--ground);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-serif);
+}
+
+/* Paper fibre over the whole ground. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: var(--fibre);
+  background-size: 160px 160px;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: -1;
+}

@@ -1,0 +1,64 @@
+.frame {
+  --paper: var(--page);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 800 / 1100;
+  overflow: hidden;
+  background-color: var(--paper);
+  /* Stop iOS inflating text in landscape — that would reflow the page. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.frame[data-background="cream"] {
+  --paper: var(--page-alt);
+}
+
+/* Fibre sits under the elements: photos rest on the paper, not in it. */
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fibre);
+  background-size: 160px 160px;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Laid out at 800 × 1100, then scaled. No will-change: Chrome would raster
+   once and stretch the bitmap, blurring text. Hidden until the first
+   measurement so it never paints at the wrong scale. */
+.sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 800px;
+  height: 1100px;
+  transform: scale(var(--page-scale, 1));
+  transform-origin: 0 0;
+  visibility: hidden;
+}
+
+.frame[data-scaled] .sheet {
+  visibility: visible;
+}
+
+.folio {
+  position: absolute;
+  bottom: 44px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  color: var(--folio);
+}
+
+.folio[data-side="left"] {
+  left: 70px;
+  rotate: -1deg;
+}
+
+.folio[data-side="right"] {
+  right: 70px;
+  rotate: 1deg;
+}

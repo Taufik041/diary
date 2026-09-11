@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,300;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #EFE6D9; }
+  :root { --fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)'/%3E%3C/svg%3E"); }
+  a { color: #7F9679; text-decoration: none; }
+  a:hover { color: #6B534A; }
+  input[type=range] { accent-color: #94A98E; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #FBF6EE; border: 3px solid #94A98E; box-shadow: 0 2px 5px rgba(107,83,74,.22); }
+  input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #FBF6EE; border: 3px solid #94A98E; }
+</style>
+</helmet>
+
+<section style="display:flex;flex-direction:column;gap:64px;padding:72px;background:#EFE6D9;background-image:var(--fibre);background-size:160px 160px;font-family:'Cormorant Garamond',serif;color:#6B534A">
+  <div id="1a" style="display:flex;flex-direction:column;gap:72px">
+
+    <div style="display:flex;align-items:baseline;gap:20px;transform:rotate(-0.4deg)">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:#F7E7E7;background:#A99C90;padding:6px 10px;border-radius:4px">1A</span>
+      <span style="font-style:italic;font-size:44px;letter-spacing:.01em">Diary</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#9C8A7E">five screens · paper, type &amp; tape</span>
+    </div>
+
+    <!-- ═══ SCREEN 1 · DESKTOP SPREAD ═══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px;transform:rotate(-0.5deg)">
+        <span style="font-style:italic;font-size:26px">1 · Desktop spread</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F">open book · 2 × 800×1100 pages</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:26px;align-items:center">
+        <!-- app chrome -->
+        <div style="width:1660px;display:flex;align-items:center;justify-content:space-between;transform:rotate(-0.3deg)">
+          <div style="display:flex;align-items:baseline;gap:16px">
+            <span style="font-style:italic;font-size:34px">Diary</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#A2907F">SEPTEMBER 2026</span>
+          </div>
+          <div style="display:flex;gap:12px">
+            <span style="font-style:italic;font-size:18px;padding:11px 22px;background:#F6EFE4;border:1px solid #DFD2C2;border-radius:999px;box-shadow:0 2px 5px rgba(107,83,74,.10)">Pages</span>
+            <span style="font-style:italic;font-size:18px;padding:11px 22px;background:#F6EFE4;border:1px solid #DFD2C2;border-radius:999px;box-shadow:0 2px 5px rgba(107,83,74,.10)">Add element</span>
+            <span style="font-style:italic;font-size:18px;padding:11px 26px;background:{{ accent }};color:#FBF6EE;border-radius:999px;box-shadow:0 3px 8px rgba(107,83,74,.18)">Edit</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:26px">
+          <!-- ‹ -->
+          <div style="width:64px;height:64px;border-radius:50%;background:#F6EFE4;border:1px solid #DFD2C2;display:grid;place-items:center;font-size:34px;line-height:1;padding-bottom:6px;color:#8C766B;box-shadow:0 3px 10px rgba(107,83,74,.14);transform:rotate(-2deg)">‹</div>
+
+          <!-- book -->
+          <div style="position:relative;padding:30px;background:linear-gradient(160deg,#B0A398,#9B8E82);border-radius:10px;box-shadow:0 6px 14px rgba(107,83,74,.20),0 28px 60px rgba(107,83,74,.18);transform:rotate(-0.7deg)">
+            <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.16;mix-blend-mode:multiply;border-radius:10px;pointer-events:none"></div>
+            <div style="position:relative;display:flex;background:#F7E7E7;box-shadow:inset 0 0 40px rgba(107,83,74,.10)">
+
+              <!-- LEFT PAGE -->
+              <div style="position:relative;width:800px;height:1100px;overflow:hidden">
+                <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.09;mix-blend-mode:multiply;pointer-events:none"></div>
+
+                <div style="position:absolute;left:66px;top:58px;transform:rotate(-1.1deg)">
+                  <div style="font-style:italic;font-size:42px;letter-spacing:.01em;color:#6B534A">Tuesday, 8 September</div>
+                  <div style="width:190px;height:1px;background:#A9BCA2;margin-top:10px"></div>
+                </div>
+
+                <div style="position:absolute;left:68px;top:158px;width:620px;transform:rotate(-0.5deg);font-family:'Caveat',cursive;font-size:31px;line-height:1.9;letter-spacing:.02em;color:#6B534A;text-wrap:pretty">
+                  Slept badly and woke before the alarm, so I made coffee and sat on the back step until the neighbours' cat came over. The whole garden still smells of last night's rain. I keep thinking about Sunday — how quiet it got past the second field, and how we stopped for twenty minutes to watch a heron do absolutely nothing at all.
+                </div>
+
+                <!-- paperclip -->
+                <sc-if value="{{ showPaperclip }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;left:672px;top:132px;width:28px;height:70px;transform:rotate(16deg);z-index:6">
+                    <div style="position:absolute;inset:0;border:3px solid #B5A798;border-radius:14px;box-shadow:0 2px 5px rgba(107,83,74,.24)"></div>
+                    <div style="position:absolute;left:8px;top:13px;right:8px;bottom:10px;border:3px solid #BEB1A2;border-top-color:transparent;border-radius:9px"></div>
+                  </div>
+                </sc-if>
+
+                <!-- photo · thin white border -->
+                <div style="position:absolute;left:74px;top:620px;width:286px;padding:9px;background:#FCFAF6;transform:rotate(-2.6deg);box-shadow:0 2px 6px rgba(107,83,74,.18),0 12px 26px rgba(107,83,74,.10)">
+                  <div style="height:330px;background:repeating-linear-gradient(45deg,#E7DBD1 0 10px,#DBCEC3 10px 20px);display:grid;place-items:center">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.05em;color:#8C766B">photo — hedgerow, 7pm</span>
+                  </div>
+                </div>
+
+                <!-- washi tape (striped) over polaroid corner -->
+                <div style="position:absolute;left:396px;top:492px;width:132px;height:38px;transform:rotate(-27deg);z-index:7;background:repeating-linear-gradient(45deg,rgba(148,169,142,.62) 0 9px,rgba(148,169,142,.30) 9px 18px);box-shadow:0 1px 4px rgba(107,83,74,.20)"></div>
+
+                <!-- photo · polaroid -->
+                <div style="position:absolute;left:428px;top:518px;width:296px;padding:14px 14px 52px;background:#FDFCF9;transform:rotate(3.2deg);box-shadow:0 2px 6px rgba(107,83,74,.20),0 14px 30px rgba(107,83,74,.12)">
+                  <div style="height:236px;background:repeating-linear-gradient(45deg,#E4D7CD 0 10px,#D8CBC0 10px 20px);display:grid;place-items:center">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.05em;color:#8C766B">photo — the heron</span>
+                  </div>
+                  <div style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:'Caveat',cursive;font-size:25px;color:#8C766B">doing absolutely nothing</div>
+                </div>
+
+                <div style="position:absolute;left:452px;top:900px;width:280px;transform:rotate(1.6deg);font-family:'Caveat',cursive;font-size:28px;line-height:1.85;color:#8C766B">
+                  no photos for the first hour, then forty in ten minutes.
+                </div>
+
+                <sc-if value="{{ showPageNumbers }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;left:70px;bottom:44px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#B29E90;transform:rotate(-1deg)">11</div>
+                </sc-if>
+              </div>
+
+              <!-- gutter -->
+              <div style="position:absolute;left:50%;top:0;bottom:0;width:96px;transform:translateX(-50%);pointer-events:none;background:linear-gradient(90deg,rgba(107,83,74,0) 0%,rgba(107,83,74,.13) 38%,rgba(107,83,74,.30) 50%,rgba(107,83,74,.13) 62%,rgba(107,83,74,0) 100%);z-index:9"></div>
+
+              <!-- RIGHT PAGE -->
+              <div style="position:relative;width:800px;height:1100px;overflow:hidden;background:#F6E5E5">
+                <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.09;mix-blend-mode:multiply;pointer-events:none"></div>
+
+                <!-- note card -->
+                <div style="position:absolute;left:64px;top:96px;width:392px;padding:30px 32px 34px;background:#F3EEE3;border:1px solid #DCD0BF;transform:rotate(1.7deg);box-shadow:0 2px 6px rgba(107,83,74,.14),0 12px 26px rgba(107,83,74,.08)">
+                  <div style="font-style:italic;font-size:27px;color:#6B534A">Worth keeping from this week</div>
+                  <div style="width:60px;height:1px;background:#A9BCA2;margin:12px 0 16px"></div>
+                  <div style="font-family:'Caveat',cursive;font-size:29px;line-height:1.95;letter-spacing:.02em;color:#6B534A">
+                    the smell of the wet lawn<br>
+                    thirty seconds of complete quiet<br>
+                    a stamp from the pier gift shop
+                  </div>
+                  <sc-if value="{{ showPaperclip }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:absolute;left:322px;top:-22px;width:26px;height:64px;transform:rotate(-9deg)">
+                      <div style="position:absolute;inset:0;border:3px solid #B5A798;border-radius:13px;box-shadow:0 2px 5px rgba(107,83,74,.22)"></div>
+                      <div style="position:absolute;left:8px;top:12px;right:8px;bottom:9px;border:3px solid #BEB1A2;border-top-color:transparent;border-radius:8px"></div>
+                    </div>
+                  </sc-if>
+                </div>
+
+                <!-- photo · rounded corners -->
+                <div style="position:absolute;left:468px;top:250px;width:276px;height:338px;border-radius:16px;overflow:hidden;transform:rotate(-3.4deg);background:repeating-linear-gradient(45deg,#E7DBD1 0 10px,#DBCEC3 10px 20px);display:grid;place-items:center;box-shadow:0 2px 6px rgba(107,83,74,.18),0 14px 30px rgba(107,83,74,.10)">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.05em;color:#8C766B;text-align:center">photo — the pier,<br>low tide</span>
+                </div>
+                <!-- washi tape (gingham) -->
+                <div style="position:absolute;left:436px;top:556px;width:150px;height:40px;transform:rotate(9deg);z-index:7;background:repeating-linear-gradient(0deg,rgba(199,168,168,.42) 0 10px,rgba(255,255,255,0) 10px 20px),repeating-linear-gradient(90deg,rgba(199,168,168,.42) 0 10px,rgba(255,255,255,0) 10px 20px),rgba(253,247,244,.55);box-shadow:0 1px 4px rgba(107,83,74,.18)"></div>
+
+                <div style="position:absolute;left:70px;top:520px;width:346px;transform:rotate(-0.7deg);font-family:'Caveat',cursive;font-size:31px;line-height:1.9;letter-spacing:.02em;color:#6B534A;text-wrap:pretty">
+                  Note to self: bring the little camera next time, and a proper jumper. We were both cold by the time we got back to the car and neither of us said so.
+                </div>
+
+                <div style="position:absolute;right:78px;bottom:120px;font-style:italic;font-size:25px;color:#A2907F;transform:rotate(-1.4deg)">nine forty, lamp on</div>
+
+                <sc-if value="{{ showPageNumbers }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;right:70px;bottom:44px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#B29E90;transform:rotate(1deg)">12</div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+
+          <!-- › -->
+          <div style="width:64px;height:64px;border-radius:50%;background:#F6EFE4;border:1px solid #DFD2C2;display:grid;place-items:center;font-size:34px;line-height:1;padding-bottom:6px;color:#8C766B;box-shadow:0 3px 10px rgba(107,83,74,.14);transform:rotate(2deg)">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MOBILE ROW ═══ -->
+    <div style="display:flex;gap:56px;align-items:flex-start">
+
+      <!-- SCREEN 2 · mobile view -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="transform:rotate(-0.6deg)">
+          <div style="font-style:italic;font-size:26px">2 · Mobile view</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F;margin-top:4px">one page, scaled to fit</div>
+        </div>
+        <div style="position:relative;width:390px;height:844px;border-radius:44px;background:#EFE6D9;border:1px solid #DDD0BF;box-shadow:0 4px 12px rgba(107,83,74,.16),0 24px 50px rgba(107,83,74,.14);overflow:hidden;transform:rotate(-1.2deg)">
+          <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.12;mix-blend-mode:multiply;pointer-events:none"></div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px 26px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">
+            <span>9:41</span>
+            <span style="display:flex;gap:4px;align-items:center"><i style="display:block;width:4px;height:9px;background:#8C766B"></i><i style="display:block;width:4px;height:12px;background:#8C766B"></i><i style="display:block;width:16px;height:9px;border:1px solid #8C766B;border-radius:2px"></i></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+            <span style="width:44px;height:44px;display:grid;place-items:center;font-size:22px;color:#8C766B">‹</span>
+            <span style="font-style:italic;font-size:21px;transform:rotate(-0.8deg)">Tuesday, 8 Sept</span>
+            <span style="width:44px;height:44px;display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-size:16px;color:#8C766B">···</span>
+          </div>
+
+          <!-- page -->
+          <div style="position:relative;margin:8px auto 0;width:358px;height:492px;background:#F7E7E7;box-shadow:0 3px 8px rgba(107,83,74,.18),0 16px 34px rgba(107,83,74,.12);transform:rotate(1.4deg);overflow:hidden">
+            <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.09;mix-blend-mode:multiply;pointer-events:none;z-index:8"></div>
+            <div style="position:absolute;left:0;top:0;width:800px;height:1100px;transform:scale(0.4475);transform-origin:top left">
+              <div style="position:absolute;left:60px;top:52px;transform:rotate(-1.2deg)">
+                <div style="font-style:italic;font-size:46px;color:#6B534A">Tuesday, 8 September</div>
+                <div style="width:180px;height:2px;background:#A9BCA2;margin-top:10px"></div>
+              </div>
+              <div style="position:absolute;left:62px;top:150px;width:660px;transform:rotate(-0.5deg);font-family:'Caveat',cursive;font-size:36px;line-height:1.85;letter-spacing:.02em;color:#6B534A;text-wrap:pretty">
+                Slept badly and woke before the alarm, so I made coffee on the back step until the neighbours' cat came over. Sunday keeps coming back to me — twenty minutes watching a heron do absolutely nothing at all.
+              </div>
+              <div style="position:absolute;left:96px;top:520px;width:352px;padding:16px 16px 62px;background:#FDFCF9;transform:rotate(-3.4deg);box-shadow:0 3px 8px rgba(107,83,74,.20),0 18px 34px rgba(107,83,74,.12)">
+                <div style="height:268px;background:repeating-linear-gradient(45deg,#E4D7CD 0 12px,#D8CBC0 12px 24px);display:grid;place-items:center">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:24px;letter-spacing:.04em;color:#8C766B">photo — the heron</span>
+                </div>
+                <div style="position:absolute;left:0;right:0;bottom:16px;text-align:center;font-family:'Caveat',cursive;font-size:32px;color:#8C766B">second field</div>
+              </div>
+              <div style="position:absolute;left:74px;top:494px;width:150px;height:44px;transform:rotate(-24deg);z-index:6;background:repeating-linear-gradient(45deg,rgba(148,169,142,.62) 0 10px,rgba(148,169,142,.30) 10px 20px);box-shadow:0 2px 5px rgba(107,83,74,.20)"></div>
+              <div style="position:absolute;left:396px;top:700px;width:340px;padding:26px 26px 28px;background:#F3EEE3;border:2px solid #DCD0BF;transform:rotate(2.6deg);z-index:7;box-shadow:0 3px 8px rgba(107,83,74,.16),0 16px 30px rgba(107,83,74,.10)">
+                <div style="font-style:italic;font-size:30px;color:#6B534A">Worth keeping</div>
+                <div style="width:56px;height:2px;background:#A9BCA2;margin:10px 0 12px"></div>
+                <div style="font-family:'Caveat',cursive;font-size:32px;line-height:1.85;color:#6B534A">the wet lawn<br>thirty seconds of quiet<br>a stamp from the pier</div>
+              </div>
+              <sc-if value="{{ showPageNumbers }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;left:64px;bottom:38px;font-family:'IBM Plex Mono',monospace;font-size:22px;letter-spacing:.14em;color:#B29E90">11</div>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- bottom bar -->
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px 26px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(239,230,217,0),#EFE6D9 34%)">
+            <span style="min-width:44px;height:44px;padding:0 20px;display:grid;place-items:center;font-style:italic;font-size:18px;background:#F6EFE4;border:1px solid #DFD2C2;border-radius:999px;box-shadow:0 2px 5px rgba(107,83,74,.10);transform:rotate(-1.4deg)">Pages</span>
+            <span style="width:56px;height:56px;display:grid;place-items:center;font-size:28px;color:#FBF6EE;background:{{ accent }};border-radius:50%;box-shadow:0 4px 10px rgba(107,83,74,.22);transform:rotate(2deg)">+</span>
+            <span style="min-width:44px;height:44px;padding:0 22px;display:grid;place-items:center;font-style:italic;font-size:18px;background:#F6EFE4;border:1px solid #DFD2C2;border-radius:999px;box-shadow:0 2px 5px rgba(107,83,74,.10);transform:rotate(1.4deg)">Edit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3 · editing state -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="transform:rotate(-0.6deg)">
+          <div style="font-style:italic;font-size:26px">3 · Editing an element</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F;margin-top:4px">selection + bottom sheet</div>
+        </div>
+        <div style="position:relative;width:390px;height:844px;border-radius:44px;background:#EFE6D9;border:1px solid #DDD0BF;box-shadow:0 4px 12px rgba(107,83,74,.16),0 24px 50px rgba(107,83,74,.14);overflow:hidden;transform:rotate(1deg)">
+          <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.12;mix-blend-mode:multiply;pointer-events:none"></div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px 26px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">
+            <span>9:41</span>
+            <span style="display:flex;gap:4px;align-items:center"><i style="display:block;width:4px;height:9px;background:#8C766B"></i><i style="display:block;width:4px;height:12px;background:#8C766B"></i><i style="display:block;width:16px;height:9px;border:1px solid #8C766B;border-radius:2px"></i></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px">
+            <span style="min-width:44px;height:44px;padding:0 14px;display:grid;place-items:center;font-style:italic;font-size:18px;color:#8C766B">Cancel</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#A2907F">EDITING</span>
+            <span style="min-width:44px;height:44px;padding:0 14px;display:grid;place-items:center;font-style:italic;font-size:18px;color:{{ accent }}">Done</span>
+          </div>
+
+          <div style="position:relative;margin:8px auto 0;width:358px;height:492px;background:#F7E7E7;box-shadow:0 3px 8px rgba(107,83,74,.18),0 16px 34px rgba(107,83,74,.12);transform:rotate(1.4deg);overflow:hidden">
+            <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.09;mix-blend-mode:multiply;pointer-events:none;z-index:8"></div>
+            <div style="position:absolute;left:0;top:0;width:800px;height:1100px;transform:scale(0.4475);transform-origin:top left">
+              <div style="position:absolute;left:60px;top:52px;transform:rotate(-1.2deg);opacity:.62">
+                <div style="font-style:italic;font-size:46px;color:#6B534A">Tuesday, 8 September</div>
+                <div style="width:180px;height:2px;background:#A9BCA2;margin-top:10px"></div>
+              </div>
+              <div style="position:absolute;left:62px;top:150px;width:300px;transform:rotate(-0.5deg);font-family:'Caveat',cursive;font-size:36px;line-height:1.85;letter-spacing:.02em;color:#6B534A;opacity:.62;text-wrap:pretty">
+                Slept badly and woke before the alarm, so I made coffee on the back step until the cat came over.
+              </div>
+              <div style="position:absolute;left:96px;top:520px;width:352px;padding:16px 16px 62px;background:#FDFCF9;transform:rotate(-3.4deg);opacity:.62;box-shadow:0 3px 8px rgba(107,83,74,.20)">
+                <div style="height:268px;background:repeating-linear-gradient(45deg,#E4D7CD 0 12px,#D8CBC0 12px 24px);display:grid;place-items:center">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:24px;color:#8C766B">photo — the heron</span>
+                </div>
+              </div>
+
+              <!-- SELECTED note card -->
+              <div style="position:absolute;left:392px;top:262px;width:370px;z-index:9;transform:rotate({{ rot }}deg)">
+                <div style="position:relative;padding:26px 26px 28px;background:#F3EEE3;border:2px solid #DCD0BF;box-shadow:0 4px 10px rgba(107,83,74,.20),0 18px 34px rgba(107,83,74,.12)">
+                  <div style="font-style:italic;font-size:30px;color:{{ selColor }}">Worth keeping</div>
+                  <div style="width:56px;height:2px;background:#A9BCA2;margin:10px 0 12px"></div>
+                  <div style="font-family:{{ selFont }};font-size:{{ selSize }};line-height:1.85;color:{{ selColor }};text-align:{{ selAlign }}">the wet lawn<br>thirty seconds of quiet<br>a stamp from the pier</div>
+                </div>
+                <div style="position:absolute;inset:-12px;border:3px solid {{ accent }};pointer-events:none"></div>
+                <div style="position:absolute;left:-22px;top:-22px;width:24px;height:24px;background:#FDFCF9;border:3px solid {{ accent }}"></div>
+                <div style="position:absolute;right:-22px;top:-22px;width:24px;height:24px;background:#FDFCF9;border:3px solid {{ accent }}"></div>
+                <div style="position:absolute;left:-22px;bottom:-22px;width:24px;height:24px;background:#FDFCF9;border:3px solid {{ accent }}"></div>
+                <div style="position:absolute;right:-22px;bottom:-22px;width:24px;height:24px;background:#FDFCF9;border:3px solid {{ accent }}"></div>
+                <div style="position:absolute;left:50%;top:-74px;width:2px;height:48px;background:{{ accent }};transform:translateX(-50%)"></div>
+                <div style="position:absolute;left:50%;top:-108px;width:38px;height:38px;border-radius:50%;background:#FDFCF9;border:3px solid {{ accent }};transform:translateX(-50%);display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-size:20px;color:{{ accent }}">⟳</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- bottom sheet -->
+          <div style="position:absolute;left:0;right:0;bottom:0;height:436px;box-sizing:border-box;background:#F6EFE4;border-top:1px solid #DFD2C2;border-radius:26px 26px 0 0;box-shadow:0 -8px 30px rgba(107,83,74,.18);padding:12px 20px 22px;display:flex;flex-direction:column;gap:14px">
+            <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.08;mix-blend-mode:multiply;pointer-events:none;border-radius:26px 26px 0 0"></div>
+            <div style="width:52px;height:5px;border-radius:3px;background:#D8C9B7;margin:2px auto 0"></div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-style:italic;font-size:21px">Note card <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#A2907F">· TEXT</span></span>
+              <span style="width:44px;height:44px;display:grid;place-items:center;font-size:22px;color:#8C766B">×</span>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <div onClick="{{ setCaveat }}" style="flex:1;height:46px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:{{ fontBgA }};color:{{ fontFgA }};font-family:'Caveat',cursive;font-size:24px;cursor:pointer">Caveat</div>
+              <div onClick="{{ setCormorant }}" style="flex:1;height:46px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:{{ fontBgB }};color:{{ fontFgB }};font-style:italic;font-size:20px;cursor:pointer">Cormorant</div>
+              <div onClick="{{ setMono }}" style="flex:1;height:46px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:{{ fontBgC }};color:{{ fontFgC }};font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer">Mono</div>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center">
+              <div style="display:flex;align-items:center;background:#FBF6EE;border:1px solid #DFD2C2;border-radius:10px;height:46px">
+                <div onClick="{{ dec }}" style="width:46px;height:46px;display:grid;place-items:center;font-size:22px;color:#8C766B;cursor:pointer">−</div>
+                <span style="min-width:46px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#6B534A">{{ sizeLabel }}</span>
+                <div onClick="{{ inc }}" style="width:46px;height:46px;display:grid;place-items:center;font-size:20px;color:#8C766B;cursor:pointer">+</div>
+              </div>
+              <div style="flex:1;display:flex;justify-content:space-between;align-items:center;background:#FBF6EE;border:1px solid #DFD2C2;border-radius:10px;height:46px;padding:0 8px">
+                <div onClick="{{ pickBrown }}" style="width:44px;height:44px;display:grid;place-items:center;cursor:pointer"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#6B534A;box-shadow:{{ ringBrown }}"></i></div>
+                <div onClick="{{ pickSage }}" style="width:44px;height:44px;display:grid;place-items:center;cursor:pointer"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#7F9679;box-shadow:{{ ringSage }}"></i></div>
+                <div onClick="{{ pickRose }}" style="width:44px;height:44px;display:grid;place-items:center;cursor:pointer"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#B98A8A;box-shadow:{{ ringRose }}"></i></div>
+                <div onClick="{{ pickGreige }}" style="width:44px;height:44px;display:grid;place-items:center;cursor:pointer"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#A99C90;box-shadow:{{ ringGreige }}"></i></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <div onClick="{{ alignLeft }}" style="flex:1;height:46px;border-radius:10px;border:1px solid #DFD2C2;background:{{ alignBgL }};display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 14px;cursor:pointer">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+              <div onClick="{{ alignCenter }}" style="flex:1;height:46px;border-radius:10px;border:1px solid #DFD2C2;background:{{ alignBgC }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0 14px;cursor:pointer">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+              <div onClick="{{ alignRight }}" style="flex:1;height:46px;border-radius:10px;border:1px solid #DFD2C2;background:{{ alignBgR }};display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;padding:0 14px;cursor:pointer">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-style:italic;font-size:17px;color:#8C766B">Rotation</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6B534A">{{ rotLabel }}</span>
+              </div>
+              <input type="range" min="-12" max="12" step="0.5" value="{{ rot }}" onChange="{{ setRot }}" style="width:100%;height:44px;appearance:none;background:linear-gradient(#DFD2C2,#DFD2C2) center/100% 5px no-repeat;border-radius:3px;outline:none" />
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:-4px">
+              <div style="flex:1;height:48px;border-radius:10px;background:#FBF6EE;border:1px solid #DFD2C2;display:flex;align-items:center;justify-content:center;gap:6px;font-style:italic;font-size:16px;color:#6B534A">↑ Forward</div>
+              <div style="flex:1;height:48px;border-radius:10px;background:#FBF6EE;border:1px solid #DFD2C2;display:flex;align-items:center;justify-content:center;gap:6px;font-style:italic;font-size:16px;color:#6B534A">↓ Back</div>
+              <div style="flex:1;height:48px;border-radius:10px;background:#FBF6EE;border:1px solid #DFD2C2;display:grid;place-items:center;font-style:italic;font-size:16px;color:#6B534A">Duplicate</div>
+              <div style="width:56px;height:48px;border-radius:10px;background:#F2E2E2;border:1px solid #E2C9C9;display:grid;place-items:center;font-size:20px;color:#B07272">×</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 4 · text editor -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="transform:rotate(-0.6deg)">
+          <div style="font-style:italic;font-size:26px">4 · Text editor</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F;margin-top:4px">full screen, no canvas</div>
+        </div>
+        <div style="position:relative;width:390px;height:844px;border-radius:44px;background:#EFE6D9;border:1px solid #DDD0BF;box-shadow:0 4px 12px rgba(107,83,74,.16),0 24px 50px rgba(107,83,74,.14);overflow:hidden;transform:rotate(-1.6deg);display:flex;flex-direction:column">
+          <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.12;mix-blend-mode:multiply;pointer-events:none"></div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px 26px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">
+            <span>9:41</span>
+            <span style="display:flex;gap:4px;align-items:center"><i style="display:block;width:4px;height:9px;background:#8C766B"></i><i style="display:block;width:4px;height:12px;background:#8C766B"></i><i style="display:block;width:16px;height:9px;border:1px solid #8C766B;border-radius:2px"></i></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:12px 20px">
+            <span style="width:44px;height:44px;display:grid;place-items:center;font-size:22px;color:#8C766B">×</span>
+            <span style="font-style:italic;font-size:21px;transform:rotate(-0.6deg)">Edit text</span>
+            <span style="min-width:44px;height:44px;padding:0 22px;display:grid;place-items:center;font-style:italic;font-size:18px;color:#FBF6EE;background:{{ accent }};border-radius:999px;box-shadow:0 3px 8px rgba(107,83,74,.18);transform:rotate(1.4deg)">Done</span>
+          </div>
+
+          <div style="position:relative;margin:6px 18px 0;padding:24px 22px;background:#F7E7E7;border:1px solid #E7D3D3;height:330px;box-shadow:0 3px 8px rgba(107,83,74,.16),0 14px 28px rgba(107,83,74,.10);transform:rotate(0.8deg);overflow:hidden">
+            <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.09;mix-blend-mode:multiply;pointer-events:none"></div>
+            <div style="position:relative;font-family:'Caveat',cursive;font-size:26px;line-height:1.95;letter-spacing:.02em;color:#6B534A;text-wrap:pretty">
+              the smell of the wet lawn, <span style="background:rgba(148,169,142,.30);padding:1px 2px">thirty seconds of complete quiet</span>, a stamp from the pier gift shop<span style="display:inline-block;width:2px;height:24px;background:{{ accent }};vertical-align:-4px;margin-left:2px"></span>
+            </div>
+            <div style="position:absolute;right:18px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#BFA9A9">86 / 400</div>
+          </div>
+
+          <div style="position:relative;padding:22px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#A2907F">TYPEFACE</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;height:48px;display:grid;place-items:center;border-radius:10px;border:1px solid #C9D3C4;background:#E9EFE6;font-family:'Caveat',cursive;font-size:25px;color:#6B534A">Caveat</div>
+              <div style="flex:1;height:48px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:#FBF6EE;font-style:italic;font-size:20px;color:#6B534A">Cormorant</div>
+              <div style="flex:1;height:48px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:#FBF6EE;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6B534A">Mono</div>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center">
+              <div style="display:flex;align-items:center;background:#FBF6EE;border:1px solid #DFD2C2;border-radius:10px;height:48px">
+                <div style="width:46px;height:48px;display:grid;place-items:center;font-size:22px;color:#8C766B">−</div>
+                <span style="min-width:46px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:14px">26 pt</span>
+                <div style="width:46px;height:48px;display:grid;place-items:center;font-size:20px;color:#8C766B">+</div>
+              </div>
+              <div style="flex:1;display:flex;justify-content:space-between;align-items:center;background:#FBF6EE;border:1px solid #DFD2C2;border-radius:10px;height:48px;padding:0 8px">
+                <div style="width:44px;height:44px;display:grid;place-items:center"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#6B534A;box-shadow:0 0 0 3px #FBF6EE,0 0 0 5px #94A98E"></i></div>
+                <div style="width:44px;height:44px;display:grid;place-items:center"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#7F9679"></i></div>
+                <div style="width:44px;height:44px;display:grid;place-items:center"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#B98A8A"></i></div>
+                <div style="width:44px;height:44px;display:grid;place-items:center"><i style="display:block;width:26px;height:26px;border-radius:50%;background:#A99C90"></i></div>
+              </div>
+            </div>
+
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#A2907F;margin-top:4px">STYLE</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;height:48px;display:grid;place-items:center;border-radius:10px;border:1px solid #DFD2C2;background:#FBF6EE;font-style:italic;font-size:17px;color:#6B534A">Plain on page</div>
+              <div style="flex:1;height:48px;display:grid;place-items:center;border-radius:10px;border:1px solid #C9D3C4;background:#E9EFE6;font-style:italic;font-size:17px;color:#6B534A">Note card</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;height:48px;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 16px;border-radius:10px;border:1px solid #C9D3C4;background:#E9EFE6">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+              <div style="flex:1;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0 16px;border-radius:10px;border:1px solid #DFD2C2;background:#FBF6EE">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+              <div style="flex:1;height:48px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;padding:0 16px;border-radius:10px;border:1px solid #DFD2C2;background:#FBF6EE">
+                <i style="display:block;height:2px;width:100%;background:#8C766B"></i><i style="display:block;height:2px;width:64%;background:#8C766B"></i><i style="display:block;height:2px;width:86%;background:#8C766B"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 5 · page grid -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="transform:rotate(-0.6deg)">
+          <div style="font-style:italic;font-size:26px">5 · All pages</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F;margin-top:4px">tilted thumbnails, add &amp; duplicate</div>
+        </div>
+        <div style="position:relative;width:390px;height:844px;border-radius:44px;background:#EFE6D9;border:1px solid #DDD0BF;box-shadow:0 4px 12px rgba(107,83,74,.16),0 24px 50px rgba(107,83,74,.14);overflow:hidden;transform:rotate(1.4deg)">
+          <div style="position:absolute;inset:0;background-image:var(--fibre);background-size:160px 160px;opacity:.12;mix-blend-mode:multiply;pointer-events:none"></div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px 26px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">
+            <span>9:41</span>
+            <span style="display:flex;gap:4px;align-items:center"><i style="display:block;width:4px;height:9px;background:#8C766B"></i><i style="display:block;width:4px;height:12px;background:#8C766B"></i><i style="display:block;width:16px;height:9px;border:1px solid #8C766B;border-radius:2px"></i></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 20px 6px">
+            <div style="transform:rotate(-0.8deg)">
+              <div style="font-style:italic;font-size:26px">Pages</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#A2907F">12 PAGES · SEPT 2026</div>
+            </div>
+            <span style="min-width:44px;height:44px;padding:0 20px;display:grid;place-items:center;font-style:italic;font-size:17px;background:#F6EFE4;border:1px solid #DFD2C2;border-radius:999px;transform:rotate(1.6deg)">Select</span>
+          </div>
+
+          <div style="position:relative;padding:16px 24px;display:grid;grid-template-columns:1fr 1fr;column-gap:6px;row-gap:2px">
+
+            <div style="position:relative;width:148px;height:204px;background:#F7E7E7;border:1px solid #EAD8D8;transform:rotate(-2.6deg);z-index:3;box-shadow:0 2px 5px rgba(107,83,74,.16),0 10px 22px rgba(107,83,74,.10);padding:12px;justify-self:center">
+              <div style="font-style:italic;font-size:11px;color:#8C766B">Tue 8 Sept</div>
+              <div style="margin-top:7px;display:flex;flex-direction:column;gap:3px"><i style="display:block;height:2px;width:100%;background:#D9C4C4"></i><i style="display:block;height:2px;width:88%;background:#D9C4C4"></i><i style="display:block;height:2px;width:94%;background:#D9C4C4"></i></div>
+              <div style="margin-top:9px;height:62px;background:repeating-linear-gradient(45deg,#E4D7CD 0 5px,#D8CBC0 5px 10px);transform:rotate(-2deg)"></div>
+              <div style="margin-top:10px;height:36px;background:#F3EEE3;border:1px solid #DCD0BF;transform:rotate(2deg)"></div>
+              <div style="position:absolute;right:8px;bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#C0ACA0">11</div>
+            </div>
+
+            <div style="position:relative;width:148px;height:204px;background:#F6E5E5;border:1px solid #EAD8D8;transform:rotate(2.2deg);z-index:2;box-shadow:0 2px 5px rgba(107,83,74,.16),0 10px 22px rgba(107,83,74,.10);padding:12px;justify-self:center;margin-left:-8px">
+              <div style="height:44px;background:#F3EEE3;border:1px solid #DCD0BF;transform:rotate(-1.6deg)"></div>
+              <div style="margin-top:11px;height:78px;background:repeating-linear-gradient(45deg,#E7DBD1 0 5px,#DBCEC3 5px 10px);border-radius:5px;transform:rotate(2deg)"></div>
+              <div style="margin-top:11px;display:flex;flex-direction:column;gap:3px"><i style="display:block;height:2px;width:100%;background:#D9C4C4"></i><i style="display:block;height:2px;width:72%;background:#D9C4C4"></i></div>
+              <div style="position:absolute;right:8px;bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#C0ACA0">12</div>
+              <div style="position:absolute;left:6px;top:-7px;width:44px;height:12px;transform:rotate(-8deg);background:repeating-linear-gradient(45deg,rgba(148,169,142,.6) 0 4px,rgba(148,169,142,.28) 4px 8px)"></div>
+            </div>
+
+            <div style="position:relative;width:148px;height:204px;background:#F7E7E7;border:1px solid #EAD8D8;transform:rotate(1.8deg);z-index:4;box-shadow:0 2px 5px rgba(107,83,74,.16),0 10px 22px rgba(107,83,74,.10);padding:12px;justify-self:center;margin-top:-10px">
+              <div style="font-style:italic;font-size:11px;color:#8C766B">Sun 6 Sept</div>
+              <div style="margin-top:9px;height:96px;background:repeating-linear-gradient(45deg,#E4D7CD 0 5px,#D8CBC0 5px 10px);transform:rotate(1.4deg)"></div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px"><i style="display:block;height:2px;width:96%;background:#D9C4C4"></i><i style="display:block;height:2px;width:80%;background:#D9C4C4"></i><i style="display:block;height:2px;width:90%;background:#D9C4C4"></i></div>
+              <div style="position:absolute;right:8px;bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#C0ACA0">10</div>
+              <!-- long-press menu -->
+              <div style="position:absolute;left:38px;top:120px;width:132px;background:#FBF6EE;border:1px solid #DFD2C2;border-radius:12px;box-shadow:0 6px 18px rgba(107,83,74,.22);transform:rotate(-2deg);z-index:9;overflow:hidden">
+                <div style="height:44px;display:flex;align-items:center;padding:0 14px;font-style:italic;font-size:16px;color:#6B534A;border-bottom:1px solid #EAE0D2">Duplicate</div>
+                <div style="height:44px;display:flex;align-items:center;padding:0 14px;font-style:italic;font-size:16px;color:#6B534A;border-bottom:1px solid #EAE0D2">Move…</div>
+                <div style="height:44px;display:flex;align-items:center;padding:0 14px;font-style:italic;font-size:16px;color:#B07272">Delete</div>
+              </div>
+            </div>
+
+            <div style="position:relative;width:148px;height:204px;background:#F6E5E5;border:1px solid #EAD8D8;transform:rotate(-1.6deg);z-index:1;box-shadow:0 2px 5px rgba(107,83,74,.16),0 10px 22px rgba(107,83,74,.10);padding:12px;justify-self:center;margin-top:-4px;margin-left:-6px">
+              <div style="height:60px;background:repeating-linear-gradient(45deg,#E7DBD1 0 5px,#DBCEC3 5px 10px);transform:rotate(-2deg)"></div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px"><i style="display:block;height:2px;width:100%;background:#D9C4C4"></i><i style="display:block;height:2px;width:86%;background:#D9C4C4"></i><i style="display:block;height:2px;width:92%;background:#D9C4C4"></i><i style="display:block;height:2px;width:64%;background:#D9C4C4"></i></div>
+              <div style="margin-top:12px;height:44px;background:#F3EEE3;border:1px solid #DCD0BF;transform:rotate(1.8deg)"></div>
+              <div style="position:absolute;right:8px;bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#C0ACA0">09</div>
+            </div>
+
+            <div style="position:relative;width:148px;height:204px;background:#F7E7E7;border:1px solid #EAD8D8;transform:rotate(2.6deg);z-index:2;box-shadow:0 2px 5px rgba(107,83,74,.16),0 10px 22px rgba(107,83,74,.10);padding:12px;justify-self:center;margin-top:-12px">
+              <div style="font-style:italic;font-size:11px;color:#8C766B">Thu 3 Sept</div>
+              <div style="margin-top:8px;display:flex;gap:6px">
+                <div style="flex:1;height:52px;background:repeating-linear-gradient(45deg,#E4D7CD 0 5px,#D8CBC0 5px 10px)"></div>
+                <div style="flex:1;height:52px;background:repeating-linear-gradient(45deg,#E7DBD1 0 5px,#DBCEC3 5px 10px);border-radius:4px"></div>
+              </div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px"><i style="display:block;height:2px;width:92%;background:#D9C4C4"></i><i style="display:block;height:2px;width:78%;background:#D9C4C4"></i><i style="display:block;height:2px;width:88%;background:#D9C4C4"></i></div>
+              <div style="position:absolute;right:8px;bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#C0ACA0">08</div>
+            </div>
+
+            <div style="width:148px;height:204px;border:2px dashed #D6C7B6;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transform:rotate(-2.2deg);justify-self:center;margin-top:-6px;margin-left:-6px;color:#A2907F">
+              <span style="width:44px;height:44px;border-radius:50%;background:#F6EFE4;border:1px solid #DFD2C2;display:grid;place-items:center;font-size:24px">+</span>
+              <span style="font-style:italic;font-size:17px">New page</span>
+            </div>
+          </div>
+
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px 26px;display:flex;justify-content:center;background:linear-gradient(180deg,rgba(239,230,217,0),#EFE6D9 40%)">
+            <span style="min-width:44px;height:48px;padding:0 34px;display:grid;place-items:center;font-style:italic;font-size:19px;color:#FBF6EE;background:{{ accent }};border-radius:999px;box-shadow:0 4px 10px rgba(107,83,74,.20);transform:rotate(-1deg)">Done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- element library strip -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="transform:rotate(-0.5deg)">
+        <div style="font-style:italic;font-size:26px">Element types</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:#A2907F;margin-top:4px">photo frames · text · tape · clip</div>
+      </div>
+      <div style="display:flex;gap:44px;align-items:flex-start;flex-wrap:wrap">
+
+        <div style="width:210px;padding:10px 10px 34px;background:#FDFCF9;transform:rotate(-2.4deg);box-shadow:0 2px 6px rgba(107,83,74,.18),0 12px 26px rgba(107,83,74,.10)">
+          <div style="height:150px;background:repeating-linear-gradient(45deg,#E4D7CD 0 10px,#D8CBC0 10px 20px);display:grid;place-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">polaroid</span></div>
+        </div>
+
+        <div style="width:210px;padding:8px;background:#FCFAF6;transform:rotate(1.8deg);box-shadow:0 2px 6px rgba(107,83,74,.18),0 12px 26px rgba(107,83,74,.10)">
+          <div style="height:150px;background:repeating-linear-gradient(45deg,#E7DBD1 0 10px,#DBCEC3 10px 20px);display:grid;place-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">thin border</span></div>
+        </div>
+
+        <div style="width:210px;height:166px;border-radius:16px;overflow:hidden;transform:rotate(-1.4deg);background:repeating-linear-gradient(45deg,#E4D7CD 0 10px,#D8CBC0 10px 20px);display:grid;place-items:center;box-shadow:0 2px 6px rgba(107,83,74,.18),0 12px 26px rgba(107,83,74,.10)"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">rounded</span></div>
+
+        <div style="width:230px;padding:14px 4px;transform:rotate(2.2deg);font-family:'Caveat',cursive;font-size:27px;line-height:1.9;letter-spacing:.02em;color:#6B534A">plain handwriting, straight onto the page</div>
+
+        <div style="width:230px;padding:22px 24px;background:#F3EEE3;border:1px solid #DCD0BF;transform:rotate(-1.8deg);box-shadow:0 2px 6px rgba(107,83,74,.14),0 12px 24px rgba(107,83,74,.08);font-family:'Caveat',cursive;font-size:27px;line-height:1.9;color:#6B534A">note card, pale ground and a hairline border</div>
+
+        <div style="display:flex;flex-direction:column;gap:26px;padding-top:16px">
+          <div style="width:180px;height:38px;transform:rotate(-4deg);background:repeating-linear-gradient(45deg,rgba(148,169,142,.62) 0 9px,rgba(148,169,142,.30) 9px 18px);box-shadow:0 1px 4px rgba(107,83,74,.18)"></div>
+          <div style="width:180px;height:38px;transform:rotate(3deg);background:repeating-linear-gradient(0deg,rgba(199,168,168,.42) 0 10px,rgba(255,255,255,0) 10px 20px),repeating-linear-gradient(90deg,rgba(199,168,168,.42) 0 10px,rgba(255,255,255,0) 10px 20px),rgba(253,247,244,.6);box-shadow:0 1px 4px rgba(107,83,74,.18)"></div>
+        </div>
+
+        <div style="position:relative;width:60px;height:96px;padding-top:14px">
+          <div style="position:absolute;left:16px;top:14px;width:28px;height:70px;transform:rotate(11deg)">
+            <div style="position:absolute;inset:0;border:3px solid #B5A798;border-radius:14px;box-shadow:0 2px 5px rgba(107,83,74,.24)"></div>
+            <div style="position:absolute;left:8px;top:13px;right:8px;bottom:10px;border:3px solid #BEB1A2;border-top-color:transparent;border-radius:9px"></div>
+          </div>
+          <div style="position:absolute;left:0;bottom:0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8C766B">clip</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#B7A88F&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#94A98E&quot;,&quot;#A7B6C2&quot;,&quot;#C7A8A8&quot;,&quot;#B7A88F&quot;],&quot;section&quot;:&quot;Look&quot;},&quot;showPaperclip&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Elements&quot;},&quot;showPageNumbers&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Elements&quot;}}">
+class Component extends DCLogic {
+  state = { rot: -2.5, font: 'caveat', size: 32, color: '#6B534A', align: 'left' };
+
+  chip(on) { return on ? '#E9EFE6' : '#FBF6EE'; }
+  ring(on) { return on ? '0 0 0 3px #FBF6EE,0 0 0 5px #94A98E' : 'none'; }
+
+  renderVals() {
+    const s = this.state;
+    const fonts = {
+      caveat: "'Caveat', cursive",
+      cormorant: "'Cormorant Garamond', serif",
+      mono: "'IBM Plex Mono', monospace"
+    };
+    return {
+      accent: this.props.accent ?? '#94A98E',
+      showPaperclip: this.props.showPaperclip ?? true,
+      showPageNumbers: this.props.showPageNumbers ?? true,
+
+      rot: s.rot,
+      rotLabel: (s.rot > 0 ? '+' : '') + s.rot.toFixed(1) + '°',
+      setRot: e => this.setState({ rot: parseFloat(e.target.value) }),
+
+      selFont: fonts[s.font],
+      selSize: s.size + 'px',
+      selColor: s.color,
+      selAlign: s.align,
+      sizeLabel: s.size + ' pt',
+
+      setCaveat: () => this.setState({ font: 'caveat' }),
+      setCormorant: () => this.setState({ font: 'cormorant' }),
+      setMono: () => this.setState({ font: 'mono' }),
+      fontBgA: this.chip(s.font === 'caveat'),
+      fontBgB: this.chip(s.font === 'cormorant'),
+      fontBgC: this.chip(s.font === 'mono'),
+      fontFgA: '#6B534A', fontFgB: '#6B534A', fontFgC: '#6B534A',
+
+      inc: () => this.setState(p => ({ size: Math.min(56, p.size + 2) })),
+      dec: () => this.setState(p => ({ size: Math.max(18, p.size - 2) })),
+
+      pickBrown: () => this.setState({ color: '#6B534A' }),
+      pickSage: () => this.setState({ color: '#7F9679' }),
+      pickRose: () => this.setState({ color: '#B98A8A' }),
+      pickGreige: () => this.setState({ color: '#A99C90' }),
+      ringBrown: this.ring(s.color === '#6B534A'),
+      ringSage: this.ring(s.color === '#7F9679'),
+      ringRose: this.ring(s.color === '#B98A8A'),
+      ringGreige: this.ring(s.color === '#A99C90'),
+
+      alignLeft: () => this.setState({ align: 'left' }),
+      alignCenter: () => this.setState({ align: 'center' }),
+      alignRight: () => this.setState({ align: 'right' }),
+      alignBgL: this.chip(s.align === 'left'),
+      alignBgC: this.chip(s.align === 'center'),
+      alignBgR: this.chip(s.align === 'right')
+    };
+  }
+}
+</script>
+</body>
+</html>
