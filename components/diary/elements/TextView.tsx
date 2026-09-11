@@ -21,17 +21,22 @@ export function TextView({ element }: { element: TextElement }) {
     textWrap: "pretty",
   };
 
+  // data-text-root is the w × h box; data-text-content wraps the laid-out
+  // text so the editor can measure its natural height.
   if (style !== "card") {
     return (
-      <div style={{ ...body, width: "100%", height: "100%", fontSize }}>
-        {content}
-        {rule && <Rule align={align} width="4.5em" margin=".24em 0 0" />}
+      <div data-text-root style={{ width: "100%", height: "100%" }}>
+        <div data-text-content style={{ ...body, fontSize }}>
+          {content}
+          {rule && <Rule align={align} width="4.5em" margin=".24em 0 0" />}
+        </div>
       </div>
     );
   }
 
   return (
     <div
+      data-text-root
       style={{
         width: "100%",
         height: "100%",
@@ -42,6 +47,7 @@ export function TextView({ element }: { element: TextElement }) {
         boxShadow: "var(--shadow-el)",
       }}
     >
+      <div data-text-content>
       {title && (
         <>
           <div
@@ -61,6 +67,7 @@ export function TextView({ element }: { element: TextElement }) {
         </>
       )}
       <div style={body}>{content}</div>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,6 @@
   position: relative;
   width: 100%;
   aspect-ratio: 800 / 1100;
-  overflow: hidden;
   background-color: var(--paper);
   /* Stop iOS inflating text in landscape — that would reflow the page. */
   -webkit-text-size-adjust: 100%;
@@ -29,7 +28,8 @@
 /* Laid out at 800 × 1100, then scaled. No will-change: Chrome would raster
    once and stretch the bitmap, blurring text. Hidden until the first
    measurement so it never paints at the wrong scale. */
-.sheet {
+.sheet,
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -40,7 +40,19 @@
   visibility: hidden;
 }
 
-.frame[data-scaled] .sheet {
+/* The paper edge: elements are clipped to the page. */
+.sheet {
+  overflow: hidden;
+}
+
+/* Editing chrome: same coordinates, not clipped, above the gutter shadow. */
+.overlay {
+  pointer-events: none;
+  z-index: 2;
+}
+
+.frame[data-scaled] .sheet,
+.frame[data-scaled] .overlay {
   visibility: visible;
 }
 

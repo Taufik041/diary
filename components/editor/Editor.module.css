@@ -1,0 +1,153 @@
+.stage {
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.stage :global([data-element-id]) {
+  cursor: pointer;
+}
+
+/* Everything below lives inside a page's overlay layer, in page units.
+   --px is one screen pixel expressed in page units, so chrome keeps its
+   on-screen size at any page scale or camera zoom. */
+.selection,
+.guide {
+  --px: calc(1px / var(--page-scale, 1) / var(--zoom, 1));
+}
+
+.probe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.selection {
+  --gap: calc(var(--px) * 6);
+  --hit: 24;
+  position: absolute;
+  pointer-events: auto;
+  cursor: move;
+}
+
+/* Touch: 44px hit areas, same visible handles. */
+@media (pointer: coarse) {
+  .selection {
+    --hit: 44;
+  }
+}
+
+.ring {
+  position: absolute;
+  inset: calc(var(--gap) * -1);
+  border: calc(var(--px) * 2) solid var(--accent);
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  width: calc(var(--px) * var(--hit));
+  height: calc(var(--px) * var(--hit));
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+}
+
+.handle::after {
+  content: "";
+  box-sizing: border-box;
+  width: calc(var(--px) * 12);
+  height: calc(var(--px) * 12);
+  background: var(--photo-white);
+  border: calc(var(--px) * 2) solid var(--accent);
+}
+
+.handle[data-handle="nw"] {
+  left: calc(var(--gap) * -1);
+  top: calc(var(--gap) * -1);
+  cursor: nwse-resize;
+}
+
+.handle[data-handle="ne"] {
+  left: calc(100% + var(--gap));
+  top: calc(var(--gap) * -1);
+  cursor: nesw-resize;
+}
+
+.handle[data-handle="se"] {
+  left: calc(100% + var(--gap));
+  top: calc(100% + var(--gap));
+  cursor: nwse-resize;
+}
+
+.handle[data-handle="sw"] {
+  left: calc(var(--gap) * -1);
+  top: calc(100% + var(--gap));
+  cursor: nesw-resize;
+}
+
+.handle[data-handle="e"] {
+  left: calc(100% + var(--gap));
+  top: 50%;
+  cursor: ew-resize;
+}
+
+.handle[data-handle="w"] {
+  left: calc(var(--gap) * -1);
+  top: 50%;
+  cursor: ew-resize;
+}
+
+.edge::after {
+  width: calc(var(--px) * 8);
+  height: calc(var(--px) * 22);
+  border-radius: calc(var(--px) * 4);
+}
+
+.stem {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--gap) * -1 - var(--px) * 26);
+  width: calc(var(--px) * 2);
+  height: calc(var(--px) * 26);
+  translate: -50% 0;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.handle.rotate {
+  left: 50%;
+  top: calc(var(--gap) * -1 - var(--px) * 26);
+  cursor: grab;
+}
+
+.rotate::after {
+  width: calc(var(--px) * 18);
+  height: calc(var(--px) * 18);
+  border-radius: 50%;
+}
+
+.guide {
+  position: absolute;
+  background: var(--rose-deep);
+  pointer-events: none;
+}
+
+.guide[data-axis="x"] {
+  top: 0;
+  height: 1100px;
+  width: calc(var(--px) * 1.5);
+  translate: -50% 0;
+}
+
+.guide[data-axis="y"] {
+  left: 0;
+  width: 800px;
+  height: calc(var(--px) * 1.5);
+  translate: 0 -50%;
+}

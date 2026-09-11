@@ -1,4 +1,4 @@
-import { Spread } from "@/components/diary/Spread";
+import { Editor } from "@/components/editor/Editor";
 import { sampleSpread } from "@/lib/diary/fixtures";
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
           September 2026
         </span>
       </header>
-      <Spread pages={sampleSpread} className="flex-1" />
+      <Editor initialPages={sampleSpread} className="flex-1" />
     </main>
   );
 }

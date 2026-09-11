@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { memo, type CSSProperties } from "react";
 import type { PageElement } from "@/lib/diary/types";
 import { ClipView } from "./ClipView";
 import { PhotoView } from "./PhotoView";
@@ -6,7 +6,9 @@ import { TapeView } from "./TapeView";
 import { TextView } from "./TextView";
 
 // Positions one element in page units. The type-specific view fills the box.
-export function ElementView({ element }: { element: PageElement }) {
+// Memoised: while one element is dragged, the others keep their object
+// identity and don't re-render.
+export const ElementView = memo(function ElementView({ element }: { element: PageElement }) {
   const body = renderBody(element);
   // Unknown types (e.g. a sticker saved by a newer build) are skipped.
   if (!body) return null;
@@ -26,7 +28,7 @@ export function ElementView({ element }: { element: PageElement }) {
       {body}
     </div>
   );
-}
+});
 
 function renderBody(element: PageElement) {
   switch (element.type) {

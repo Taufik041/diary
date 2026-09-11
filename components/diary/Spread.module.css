@@ -1,9 +1,18 @@
 /* Fits the book to both axes in CSS; each page then measures its own width. */
 .stage {
+  position: relative;
   container-type: size;
+  min-height: 0;
+}
+
+/* Pan/zoom layer (identity unless an editor drives it). Not a container,
+   so the book below still sizes against the stage. */
+.camera {
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
-  min-height: 0;
+  transform-origin: 0 0;
 }
 
 /* Desktop book: 1660 × 1160 book units (2 × 800 pages + 30 cover each side).
