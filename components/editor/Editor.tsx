@@ -15,6 +15,13 @@ import {
 } from "@/lib/diary/types";
 import { duplicateOf, layerPosition, newPhoto, reorder, topZ } from "@/lib/editor/elements";
 import {
+  mapAllElements,
+  recordEdit,
+  redo as redoStep,
+  undo as undoStep,
+  type Doc,
+} from "@/lib/editor/history";
+import {
   clientToPage,
   r1,
   readPageMatrix,
@@ -27,6 +34,7 @@ import { errorMessage } from "@/lib/http";
 import { AddPanel } from "./AddPanel";
 import { Canvas, type Selection } from "./Canvas";
 import { ControlsPanel } from "./ControlsPanel";
+import { UndoIcon, type HistoryControls } from "./controls";
 import { measureTextHeight } from "./measure";
 import { PagesGrid } from "./PagesGrid";
 import { CaptionEditor, TextEditor } from "./TextEditor";
@@ -56,7 +64,11 @@ const SAVE_LABEL: Record<SaveState, string> = {
 // The diary editor: owns the pages, the selection and the panels. Canvas
 // handles gestures; the panels handle precise edits; changes autosave.
 export function Editor({ diary, initialPages }: { diary: Diary; initialPages: PageData[] }) {
-  const [pages, setPages] = useState(initialPages);
+  // Pages and their undo history (see lib/editor/history.ts).
+  const [doc, setDoc] = useState<Doc>(() => ({ pages: initialPages, past: [], future: [] }));
+  const pages = doc.pages;
+  // Page-list changes (add, delete, renumber) are not undoable.
+  const setPages = (fn: (ps: PageData[]) => PageData[]) => setDoc((d) => ({ ...d, pages: fn(d.pages) }));
   const [selection, setSelection] = useState<Selection>(null);
   const [lastPageId, setLastPageId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -70,6 +82,8 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
   const [gridOpen, setGridOpen] = useState(false);
   const [pageBusy, setPageBusy] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
+  // Bumped when a gesture or key press finishes; see the listener below.
+  const groupRef = useRef(0);
 
   const saveState = useAutosave(pages);
   const single = useSinglePage();
@@ -100,12 +114,19 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
 
   // ── Page state ────────────────────────────────────────────────────────────
 
-  const mapElements = (pageId: string, fn: (els: PageElement[]) => PageElement[]) =>
-    setPages((ps) => ps.map((p) => (p.id === pageId ? { ...p, elements: fn(p.elements) } : p)));
+  // Every element edit is recorded for undo. `key` (an element id) plus the
+  // current group merges a burst of edits to one element — a drag, a held
+  // nudge — into a single step.
+  const mapElements = (pageId: string, fn: (els: PageElement[]) => PageElement[], key?: string) => {
+    const group = key === undefined ? undefined : `${key}#${groupRef.current}`;
+    setDoc((d) => recordEdit(d, pageId, fn, group));
+  };
 
   const patchElement = (pageId: string, id: string, patch: Partial<PageElement>) =>
-    mapElements(pageId, (els) =>
-      els.map((e) => (e.id === id ? ({ ...e, ...patch } as PageElement) : e)),
+    mapElements(
+      pageId,
+      (els) => els.map((e) => (e.id === id ? ({ ...e, ...patch } as PageElement) : e)),
+      id,
     );
 
   const find = (pageId: string, id: string) =>
@@ -191,19 +212,19 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
 
   // Applies to every photo using `from` — including a copy duplicated while
   // the upload was still running. `to: null` removes them.
-  const replaceSrc = (from: string, to: string | null) =>
-    setPages((ps) =>
-      ps.map((p) =>
-        p.elements.some((e) => e.type === "photo" && e.src === from)
-          ? {
-              ...p,
-              elements: to
-                ? p.elements.map((e) => (e.type === "photo" && e.src === from ? { ...e, src: to } : e))
-                : p.elements.filter((e) => !(e.type === "photo" && e.src === from)),
-            }
-          : p,
+  // Also rewrites undo history, so undo never restores a dead preview URL.
+  const replaceSrc = (from: string, to: string | null) => {
+    const uses = (e: PageElement) => e.type === "photo" && e.src === from;
+    setDoc((d) =>
+      mapAllElements(d, (els) =>
+        !els.some(uses)
+          ? els
+          : to
+            ? els.map((e) => (uses(e) ? { ...e, src: to } : e))
+            : els.filter((e) => !uses(e)),
       ),
     );
+  };
 
   const addPhoto = async (frame: PhotoFrame, file: File) => {
     let photo: Awaited<ReturnType<typeof resizeImage>>;
@@ -238,8 +259,10 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
 
   const updateSelected = (fn: (el: PageElement) => Partial<PageElement>) => {
     if (!selection) return;
-    mapElements(selection.pageId, (els) =>
-      els.map((e) => (e.id === selection.elementId ? ({ ...e, ...fn(e) } as PageElement) : e)),
+    mapElements(
+      selection.pageId,
+      (els) => els.map((e) => (e.id === selection.elementId ? ({ ...e, ...fn(e) } as PageElement) : e)),
+      selection.elementId,
     );
   };
 
@@ -354,6 +377,26 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
 
   const editingElement = editing ? find(editing.pageId, editing.elementId) : undefined;
 
+  // ── Undo / redo ───────────────────────────────────────────────────────────
+
+  // If the step lands on a page that's off screen, go there so it's seen.
+  const applyHistory = (step: typeof undoStep) => {
+    const { pageId } = step(doc);
+    setDoc((d) => step(d).doc);
+    const index = pageId ? pages.findIndex((p) => p.id === pageId) : -1;
+    if (index >= 0 && !visible.some((p) => p.id === pageId)) {
+      setSelection(null);
+      setCurrent(index);
+    }
+  };
+
+  const history: HistoryControls = {
+    canUndo: doc.past.length > 0,
+    canRedo: doc.future.length > 0,
+    onUndo: () => applyHistory(undoStep),
+    onRedo: () => applyHistory(redoStep),
+  };
+
   // ── Keyboard (desktop) ────────────────────────────────────────────────────
 
   const onKey = useRef<(e: KeyboardEvent) => void>(() => {});
@@ -367,7 +410,16 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
         if (e.key === "Escape") setGridOpen(false);
         return;
       }
+      // Inside a field the browser's own undo applies.
       if ((e.target as HTMLElement | null)?.closest?.("input, textarea, select")) return;
+      const mod = e.metaKey || e.ctrlKey;
+      const key = e.key.toLowerCase();
+      if (mod && (key === "z" || key === "y")) {
+        e.preventDefault();
+        if (key === "y" || e.shiftKey) history.onRedo();
+        else history.onUndo();
+        return;
+      }
       if (e.key === "Escape") {
         setSelection(null);
         setAddOpen(false);
@@ -402,6 +454,23 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
     const listener = (e: KeyboardEvent) => onKey.current(e);
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
+  }, []);
+
+  // One drag, one held button, one key press = one undo step. Lifting a
+  // finger or a key ends the group; the wall clock isn't involved, so
+  // reduced timer precision can't split a gesture into many steps.
+  useEffect(() => {
+    const end = () => {
+      groupRef.current += 1;
+    };
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    window.addEventListener("keyup", end);
+    return () => {
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+      window.removeEventListener("keyup", end);
+    };
   }, []);
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -493,6 +562,7 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
               onDelete={remove}
               onClose={() => setSelection(null)}
               onEdit={() => openEditor(selection.pageId, selected.id)}
+              history={history}
             />
           ) : (
             <>
@@ -501,7 +571,12 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
                 className={addOpen ? panel.panel : `${panel.panel} ${panel.desktopOnly}`}
                 aria-label="Add to the page"
               >
-                <AddPanel onAdd={addElement} onAddPhoto={addPhoto} onClose={() => setAddOpen(false)} />
+                <AddPanel
+                  onAdd={addElement}
+                  onAddPhoto={addPhoto}
+                  onClose={() => setAddOpen(false)}
+                  history={history}
+                />
               </aside>
               {!addOpen && (
                 <div className={panel.bar}>
@@ -536,7 +611,15 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
                       ›
                     </button>
                   </div>
-                  <span className={panel.barNumber}>{position}</span>
+                  <button
+                    type="button"
+                    className={`${panel.barTurn} ${panel.barUndo}`}
+                    disabled={!history.canUndo}
+                    aria-label="Undo"
+                    onClick={history.onUndo}
+                  >
+                    <UndoIcon />
+                  </button>
                 </div>
               )}
             </>

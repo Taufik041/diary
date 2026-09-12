@@ -52,6 +52,26 @@
   font-size: 21px;
 }
 
+.headerActions,
+.history {
+  display: flex;
+  align-items: center;
+}
+
+.historyBtn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.historyBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
 .kind,
 .label,
 .mono,
@@ -422,11 +442,7 @@
     opacity: 0.3;
   }
 
-  .barNumber {
+  .barUndo {
     justify-self: end;
-    font-family: var(--font-plex-mono), monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--ink-faint);
   }
 }

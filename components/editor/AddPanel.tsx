@@ -4,17 +4,19 @@ import { useRef, useState } from "react";
 import type { PageElement, PhotoFrame } from "@/lib/diary/types";
 import { FONTS } from "@/lib/diary/presets";
 import { newClip, newTape, newText } from "@/lib/editor/elements";
-import { Chip, Frames, Label, TapeSwatches } from "./controls";
+import { Chip, Frames, HistoryButtons, Label, TapeSwatches, type HistoryControls } from "./controls";
 import p from "./Panel.module.css";
 
 export function AddPanel({
   onAdd,
   onAddPhoto,
   onClose,
+  history,
 }: {
   onAdd: (el: PageElement) => void;
   onAddPhoto: (frame: PhotoFrame, file: File) => void;
   onClose: () => void;
+  history: HistoryControls;
 }) {
   const [frame, setFrame] = useState<PhotoFrame>("polaroid");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -24,9 +26,12 @@ export function AddPanel({
       <div className={p.grabber} />
       <div className={p.header}>
         <span className={p.title}>Add to the page</span>
-        <button type="button" className={`${p.close} ${p.mobileOnly}`} onClick={onClose} aria-label="Close">
-          ×
-        </button>
+        <div className={p.headerActions}>
+          <HistoryButtons {...history} />
+          <button type="button" className={`${p.close} ${p.mobileOnly}`} onClick={onClose} aria-label="Close">
+            ×
+          </button>
+        </div>
       </div>
 
       <Label>Photo</Label>

@@ -5,7 +5,9 @@ import {
   Alignment,
   Chip,
   Frames,
+  HistoryButtons,
   RepeatButton,
+  type HistoryControls,
   Stepper,
   Swatches,
   TapeSwatches,
@@ -50,6 +52,7 @@ interface ControlsPanelProps {
   onClose: () => void;
   // Opens the full-screen editor (text, or a polaroid's caption).
   onEdit: () => void;
+  history: HistoryControls;
 }
 
 // Precise, per-element controls: bottom sheet on mobile, side panel on
@@ -66,6 +69,7 @@ export function ControlsPanel({
   onDelete,
   onClose,
   onEdit,
+  history,
 }: ControlsPanelProps) {
   const boxSize = (
     <Stepper
@@ -82,9 +86,12 @@ export function ControlsPanel({
         <span className={p.title}>
           {nameOf(el)} <span className={p.kind}>· {el.type.toUpperCase()}</span>
         </span>
-        <button type="button" className={p.close} onClick={onClose} aria-label="Deselect">
-          ×
-        </button>
+        <div className={p.headerActions}>
+          <HistoryButtons {...history} />
+          <button type="button" className={p.close} onClick={onClose} aria-label="Deselect">
+            ×
+          </button>
+        </div>
       </div>
 
       {el.type === "text" && (

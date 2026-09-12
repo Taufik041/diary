@@ -22,6 +22,46 @@ export function Chip({ pressed, className, ...props }: ButtonProps & { pressed?:
   return <button type="button" aria-pressed={pressed} className={cx(p.chip, className)} {...props} />;
 }
 
+export interface HistoryControls {
+  canUndo: boolean;
+  canRedo: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
+}
+
+export function UndoIcon({ redo }: { redo?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      style={redo ? { transform: "scaleX(-1)" } : undefined}
+    >
+      <path d="M9 14 4 9l5-5" />
+      <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+    </svg>
+  );
+}
+
+export function HistoryButtons({ canUndo, canRedo, onUndo, onRedo }: HistoryControls) {
+  return (
+    <div className={p.history}>
+      <button type="button" className={p.historyBtn} disabled={!canUndo} onClick={onUndo} aria-label="Undo">
+        <UndoIcon />
+      </button>
+      <button type="button" className={p.historyBtn} disabled={!canRedo} onClick={onRedo} aria-label="Redo">
+        <UndoIcon redo />
+      </button>
+    </div>
+  );
+}
+
 export function Label({ children }: { children: ReactNode }) {
   return <div className={p.label}>{children}</div>;
 }
