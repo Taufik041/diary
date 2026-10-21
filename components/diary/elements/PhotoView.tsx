@@ -72,15 +72,15 @@ export function PhotoView({ element }: { element: PhotoElement }) {
             bottom: 0,
             height: inset.bottom,
             display: "flex",
-            alignItems: "center",
+            // A caption too long for the strip wraps and runs on below it.
+            alignItems: "safe center",
             justifyContent: "center",
+            textAlign: "center",
+            overflowWrap: "break-word",
             fontFamily: FONTS.caveat.family,
             fontSize: inset.bottom * 0.48,
             lineHeight: 1,
             color: "var(--ink-soft)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
           }}
         >
           {caption}

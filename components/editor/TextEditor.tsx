@@ -7,9 +7,6 @@ import { Alignment, Chip, Label, Stepper, Swatches, Typefaces } from "./controls
 import p from "./Panel.module.css";
 import s from "./TextEditor.module.css";
 
-const MAX_TEXT = 1000;
-const MAX_CAPTION = 40;
-
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
 // Full-screen editing: the canvas is covered, so the on-screen keyboard can
@@ -132,14 +129,10 @@ export function TextEditor({
           className={s.textarea}
           value={d.content}
           placeholder="Write something…"
-          maxLength={MAX_TEXT}
           aria-label="Text"
           onChange={(e) => set({ content: e.target.value })}
           style={textStyle}
         />
-        <div className={s.count}>
-          {d.content.length} / {MAX_TEXT}
-        </div>
       </div>
 
       <div className={s.controls}>
@@ -188,7 +181,6 @@ export function CaptionEditor({
           className={s.caption}
           value={caption}
           placeholder="a few words under the photo"
-          maxLength={MAX_CAPTION}
           aria-label="Caption"
           enterKeyHint="done"
           onChange={(e) => setCaption(e.target.value)}
@@ -200,9 +192,6 @@ export function CaptionEditor({
           }}
           style={{ fontFamily: FONTS.caveat.family }}
         />
-        <div className={s.count}>
-          {caption.length} / {MAX_CAPTION}
-        </div>
       </div>
     </Shell>
   );

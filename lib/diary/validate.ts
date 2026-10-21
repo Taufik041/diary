@@ -34,10 +34,10 @@ const isObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 const isNum = (v: unknown, lo: number, hi: number): v is number =>
   typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi;
-const isStr = (v: unknown, max: number): v is string => typeof v === "string" && v.length <= max;
+const isStr = (v: unknown, max = Infinity): v is string => typeof v === "string" && v.length <= max;
 const oneOf = <T extends string>(v: unknown, list: readonly T[]): v is T =>
   typeof v === "string" && (list as readonly string[]).includes(v);
-const optStr = (v: unknown, max: number): v is string | undefined => v === undefined || isStr(v, max);
+const optStr = (v: unknown, max?: number): v is string | undefined => v === undefined || isStr(v, max);
 
 export const isBackground = (v: unknown): v is PageBackground => oneOf(v, BACKGROUNDS);
 
@@ -62,13 +62,13 @@ export function parseElement(v: unknown): PageElement | null {
   switch (v.type) {
     case "photo": {
       const { src, frame, caption } = v;
-      if (!isStr(src, 2000) || !oneOf(frame, FRAMES) || !optStr(caption, 200)) return null;
+      if (!isStr(src, 2000) || !oneOf(frame, FRAMES) || !optStr(caption)) return null;
       return { ...base, type: "photo", src, frame, ...(caption ? { caption } : {}) };
     }
     case "text": {
       const { content, style, fontFamily, fontSize, color, align, title, rule } = v;
       if (
-        !isStr(content, 5000) ||
+        !isStr(content) ||
         !oneOf(style, STYLES) ||
         !oneOf(fontFamily, FONTS) ||
         !isNum(fontSize, 4, 400) ||
