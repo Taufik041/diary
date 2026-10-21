@@ -100,8 +100,8 @@ interface CanvasProps {
   onChange: (pageId: string, elementId: string, patch: Partial<PageElement>) => void;
   // A tap on the element that was already selected.
   onOpen: (pageId: string, elementId: string) => void;
-  // Any press on a page — the editor adds new elements to the last one.
-  onPageTouch: (pageId: string) => void;
+  // The pointer moved onto a page — on a two-page spread, new elements go there.
+  onPageHover: (pageId: string) => void;
 }
 
 // The spread plus every direct-manipulation gesture. All maths happens in
@@ -115,7 +115,7 @@ export function Canvas({
   onSelect,
   onChange,
   onOpen,
-  onPageTouch,
+  onPageHover,
 }: CanvasProps) {
   const [guides, setGuides] = useState<{ pageId: string; guides: Guide[] } | null>(null);
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, zoom: 1 });
@@ -299,7 +299,6 @@ export function Canvas({
     const slop = SLOP_PX[e.pointerType] ?? 5;
     const base = { kind: "pending", pointerId: e.pointerId, start, slop } as const;
     const selectedHere = selection && selection.pageId === pageId ? selection : null;
-    if (pageId) onPageTouch(pageId);
 
     if (selectedHere && handle) {
       gesture.current = beginHandle(e.pointerId, selectedHere, handle, start);
@@ -398,6 +397,10 @@ export function Canvas({
       stageRef={stageRef}
       stageProps={{
         onPointerDown,
+        onPointerOver: (e) => {
+          const pageId = (e.target as Element).closest<HTMLElement>("[data-page-id]")?.dataset.pageId;
+          if (pageId) onPageHover(pageId);
+        },
         onPointerMove,
         onPointerUp: onPointerEnd,
         onPointerCancel: onPointerEnd,

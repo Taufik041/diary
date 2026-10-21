@@ -70,7 +70,7 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
   // Page-list changes (add, delete, renumber) are not undoable.
   const setPages = (fn: (ps: PageData[]) => PageData[]) => setDoc((d) => ({ ...d, pages: fn(d.pages) }));
   const [selection, setSelection] = useState<Selection>(null);
-  const [lastPageId, setLastPageId] = useState<string | null>(null);
+  const [hoverPageId, setHoverPageId] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   // Full-screen text editor. isNew: discard the element on cancel.
   const [editing, setEditing] = useState<{ pageId: string; elementId: string; isNew: boolean } | null>(
@@ -157,11 +157,13 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
 
   // ── Adding ────────────────────────────────────────────────────────────────
 
-  // New elements go to the selected element's page, else the page last
-  // touched, else the first visible; centred on whatever part is on screen.
+  // New elements go to the selected element's page, else the page in view:
+  // on mobile the one page shown; on a two-page spread the page the pointer
+  // was last over, else the left page. Centred on whatever part is on screen.
   const targetPageId = () => {
-    const candidates = [selection?.pageId, lastPageId];
-    return candidates.find((id) => id && visible.some((p) => p.id === id)) ?? visible[0].id;
+    const shown = single ? [pages[at]] : visible;
+    const candidates = [selection?.pageId, single ? null : hoverPageId];
+    return candidates.find((id) => id && shown.some((p) => p.id === id)) ?? shown[0].id;
   };
 
   const placement = (pageId: string, w: number, h: number) => {
@@ -527,7 +529,7 @@ export function Editor({ diary, initialPages }: { diary: Diary; initialPages: Pa
               }}
               onChange={change}
               onOpen={openEditor}
-              onPageTouch={setLastPageId}
+              onPageHover={setHoverPageId}
             />
             <button
               type="button"
