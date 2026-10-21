@@ -29,3 +29,14 @@ CREATE TABLE IF NOT EXISTS diary.pages (
   -- Deferrable so a single UPDATE can shift a run of indexes by one.
   CONSTRAINT pages_diary_index UNIQUE (diary_id, "index") DEFERRABLE INITIALLY IMMEDIATE
 );
+
+-- Notes found by catching a petal at the gate. Public before sign-in, so
+-- nothing private belongs here. `position` orders the admin list; the gate
+-- shuffles them anyway.
+CREATE TABLE IF NOT EXISTS diary.gate_messages (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  body       text NOT NULL,
+  position   int  NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT gate_messages_body_nonempty CHECK (length(btrim(body)) > 0)
+);

@@ -210,3 +210,12 @@ const rightPage: SeedPage = {
 };
 
 export const SEED_PAGES: SeedPage[] = [leftPage, rightPage];
+
+// Placeholder notes for the petals at the gate. Inserted once, when the
+// gate_messages table is first created; edit them under /admin.
+export const SEED_GATE_MESSAGES = [
+  "You came back. The kettle’s already on.",
+  "Some days are just for pressing flowers.",
+  "Write it down before it turns into something smaller.",
+  "This one fell for you.",
+];

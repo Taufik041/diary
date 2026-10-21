@@ -4,10 +4,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import s from "./Admin.module.css";
 
-type SetupResult = { ok?: boolean; diaryCreated?: boolean; pagesSeeded?: number; error?: string };
+type SetupResult = {
+  ok?: boolean;
+  diaryCreated?: boolean;
+  pagesSeeded?: number;
+  messagesSeeded?: number;
+  error?: string;
+};
 
 /** Creates the tables and seeds the defaults. Safe to press again. */
 export function SetupButton() {
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -24,9 +31,12 @@ export function SetupButton() {
     const parts = [
       "tables ready",
       body.diaryCreated ? "diary created" : null,
-      body.pagesSeeded ? `${body.pagesSeeded} pages seeded` : "nothing to seed",
+      body.pagesSeeded ? `${body.pagesSeeded} pages seeded` : null,
+      body.messagesSeeded ? `${body.messagesSeeded} gate notes seeded` : null,
     ].filter(Boolean);
+    if (parts.length === 1) parts.push("nothing to seed");
     setResult({ ok: true, text: parts.join(" · ") });
+    router.refresh();
   }
 
   return (

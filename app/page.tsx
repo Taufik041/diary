@@ -1,15 +1,16 @@
 import { Notice } from "@/components/admin/Notice";
-import { SignIn } from "@/components/admin/SignIn";
 import { Editor } from "@/components/editor/Editor";
+import { Gate } from "@/components/gate/Gate";
 import { hasAdminCookie } from "@/lib/auth";
 import { loadDiary, type LoadResult } from "@/lib/diary/repo";
+import { gateMessages } from "@/lib/gate/messages";
 import { errorMessage } from "@/lib/http";
 
 export const dynamic = "force-dynamic";
 
 // The whole site is private: nothing renders without the admin cookie.
 export default async function Home() {
-  if (!(await hasAdminCookie())) return <SignIn />;
+  if (!(await hasAdminCookie())) return <Gate messages={await gateMessages()} />;
 
   const result: LoadResult | { status: "error"; message: string } = await loadDiary().catch((error) => ({
     status: "error" as const,

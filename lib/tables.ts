@@ -11,4 +11,5 @@ export const SCHEMA = "diary";
 export const T = {
   diaries: `${SCHEMA}.diaries`,
   pages: `${SCHEMA}.pages`,
+  gateMessages: `${SCHEMA}.gate_messages`,
 } as const;

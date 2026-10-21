@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { query, queryOne, sql } from "@/lib/db";
 import { T } from "@/lib/tables";
-import { SEED_PAGES } from "./seed";
+import { SEED_GATE_MESSAGES, SEED_PAGES } from "./seed";
 
 /** Split a SQL script into statements. The schema has no semicolons inside
  *  string literals, so a statement-level split is enough. */
@@ -25,8 +25,16 @@ function statements(script: string): string[] {
  * the DDL is guarded, and seeds only fill what is missing — an existing
  * diary's pages are never touched.
  */
-export async function setupDatabase(): Promise<{ diaryCreated: boolean; pagesSeeded: number }> {
+export async function setupDatabase(): Promise<{
+  diaryCreated: boolean;
+  pagesSeeded: number;
+  messagesSeeded: number;
+}> {
   const script = await readFile(path.join(process.cwd(), "db", "schema.sql"), "utf8");
+  // Gate notes are seeded only with a new table, so deleting them all sticks.
+  const hadMessages = await queryOne<{ t: string | null }>(`SELECT to_regclass($1)::text AS t`, [
+    T.gateMessages,
+  ]);
   for (const stmt of statements(script)) {
     await sql().query(stmt);
   }
@@ -58,5 +66,16 @@ export async function setupDatabase(): Promise<{ diaryCreated: boolean; pagesSee
     pagesSeeded = SEED_PAGES.length;
   }
 
-  return { diaryCreated, pagesSeeded };
+  let messagesSeeded = 0;
+  if (!hadMessages?.t) {
+    const db = sql();
+    await db.transaction(
+      SEED_GATE_MESSAGES.map((body, i) =>
+        db.query(`INSERT INTO ${T.gateMessages} (body, position) VALUES ($1, $2)`, [body, i]),
+      ),
+    );
+    messagesSeeded = SEED_GATE_MESSAGES.length;
+  }
+
+  return { diaryCreated, pagesSeeded, messagesSeeded };
 }
