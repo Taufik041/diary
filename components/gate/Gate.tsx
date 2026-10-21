@@ -89,6 +89,9 @@ function readView(): View {
   return { w, h, cy: vv.offsetTop + vv.height * 0.46, cx: vv.offsetLeft + vv.width / 2 };
 }
 
+const isButton = (target: EventTarget | null) =>
+  target instanceof Element && target.closest("button") !== null;
+
 // ── Notes ───────────────────────────────────────────────────────────────────
 
 function shuffle<T>(list: T[]): T[] {
@@ -253,6 +256,11 @@ export function Gate({ messages }: { messages: string[] }) {
         closeNote();
         return;
       }
+      // Enter anywhere opens, not only inside the (invisible) input.
+      if (e.key === "Enter" && document.activeElement !== inputRef.current && !isButton(e.target)) {
+        if (inputRef.current?.value) submit();
+        return;
+      }
       if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) return;
       if (document.activeElement !== inputRef.current) inputRef.current?.focus({ preventScroll: true });
     };
@@ -305,6 +313,11 @@ export function Gate({ messages }: { messages: string[] }) {
   const onPointerDown = (e: ReactPointerEvent) => {
     handled.current = false;
     if (leaving) return;
+    // Controls handle their own presses.
+    if (isButton(e.target)) {
+      handled.current = true;
+      return;
+    }
     if (note) {
       handled.current = true;
       if (note.stage === "open") closeNote();
@@ -336,15 +349,20 @@ export function Gate({ messages }: { messages: string[] }) {
 
   // ── Signing in ──────────────────────────────────────────────────────────
 
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!value || state !== "idle") return;
+  // Reached three ways: Enter in the input (handled on keydown — implicit
+  // form submission needs a keypress carrying "\r", which not every input
+  // method sends), Enter elsewhere on the page, and the Open button.
+  async function submit(event?: FormEvent) {
+    event?.preventDefault();
+    // The DOM value, in case input arrived without a React change yet.
+    const passphrase = inputRef.current?.value || value;
+    if (!passphrase || state !== "idle") return;
     setState("checking");
     setNotice("");
     const response = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: value }),
+      body: JSON.stringify({ password: passphrase }),
     }).catch(() => null);
 
     if (response?.ok) {
@@ -475,9 +493,24 @@ export function Gate({ messages }: { messages: string[] }) {
             const end = el.value.length;
             if (el.selectionStart !== end || el.selectionEnd !== end) el.setSelectionRange(end, end);
           }}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter" || e.nativeEvent.isComposing) return;
+            e.preventDefault(); // no second, implicit submission
+            submit();
+          }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
+        {/* Always a way in that needs no key at all. */}
+        <button
+          type="submit"
+          className={s.open}
+          style={view && line ? { top: view.cy + line.fontSize * 0.75 + 34 } : undefined}
+          disabled={!value || state !== "idle"}
+          hidden={!!note}
+        >
+          Open the diary
+        </button>
       </form>
 
       <p
