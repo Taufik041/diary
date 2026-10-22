@@ -92,6 +92,11 @@ function readView(): View {
 const isButton = (target: EventTarget | null) =>
   target instanceof Element && target.closest("button") !== null;
 
+// Enter, as far as a keydown can tell. Android keyboards often send key
+// "Unidentified" / keyCode 229 instead, which is why this is never the only
+// way in (see `submit`).
+const isEnter = (e: KeyboardEvent) => !e.isComposing && (e.key === "Enter" || e.keyCode === 13);
+
 // ── Notes ───────────────────────────────────────────────────────────────────
 
 function shuffle<T>(list: T[]): T[] {
@@ -256,9 +261,10 @@ export function Gate({ messages }: { messages: string[] }) {
         closeNote();
         return;
       }
-      // Enter anywhere opens, not only inside the (invisible) input.
-      if (e.key === "Enter" && document.activeElement !== inputRef.current && !isButton(e.target)) {
-        if (inputRef.current?.value) submit();
+      // Enter anywhere opens, focused input or not. A focused button is left
+      // to its own click.
+      if (isEnter(e) && !isButton(e.target)) {
+        submit();
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) return;
@@ -349,14 +355,35 @@ export function Gate({ messages }: { messages: string[] }) {
 
   // ── Signing in ──────────────────────────────────────────────────────────
 
-  // Reached three ways: Enter in the input (handled on keydown — implicit
-  // form submission needs a keypress carrying "\r", which not every input
-  // method sends), Enter elsewhere on the page, and the Open button.
+  // Several paths lead here, deliberately, because none of them fires on
+  // every keyboard: native implicit submission (the form's submit event),
+  // Enter on keydown anywhere on the page, a beforeinput line break in the
+  // input, and the Open button. One Enter can set off more than one of them.
+  // `busy` is what keeps that to one POST: it's set synchronously, while
+  // `state` only changes on the next render, so a second path in the same
+  // keypress would still see "idle".
+  const busy = useRef(false);
+
+  // Line breaks reach the input as beforeinput on mobile keyboards whose
+  // keydown says nothing useful. React's onBeforeInput isn't the native
+  // event (no inputType), so listen directly.
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    const onBeforeInput = (e: InputEvent) => {
+      if (e.inputType === "insertLineBreak" || e.inputType === "insertParagraph") submit();
+    };
+    input.addEventListener("beforeinput", onBeforeInput);
+    return () => input.removeEventListener("beforeinput", onBeforeInput);
+  });
+
   async function submit(event?: FormEvent) {
+    // Always, even when not sending: the form must never navigate.
     event?.preventDefault();
     // The DOM value, in case input arrived without a React change yet.
     const passphrase = inputRef.current?.value || value;
-    if (!passphrase || state !== "idle") return;
+    if (!passphrase || busy.current || state !== "idle") return;
+    busy.current = true;
     setState("checking");
     setNotice("");
     const response = await fetch("/api/admin/login", {
@@ -383,6 +410,7 @@ export function Gate({ messages }: { messages: string[] }) {
       return;
     }
 
+    busy.current = false;
     setState("idle");
     if (!response) setNotice("can’t reach the diary · check the connection");
     else if (response.status === 429) {
@@ -410,6 +438,7 @@ export function Gate({ messages }: { messages: string[] }) {
     }, 500);
     later(() => {
       setValue("");
+      busy.current = false;
       setState("idle");
       if (!coarse) inputRef.current?.focus({ preventScroll: true });
     }, 1300);
@@ -492,11 +521,6 @@ export function Gate({ messages }: { messages: string[] }) {
             const el = e.currentTarget;
             const end = el.value.length;
             if (el.selectionStart !== end || el.selectionEnd !== end) el.setSelectionRange(end, end);
-          }}
-          onKeyDown={(e) => {
-            if (e.key !== "Enter" || e.nativeEvent.isComposing) return;
-            e.preventDefault(); // no second, implicit submission
-            submit();
           }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
